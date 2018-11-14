@@ -1,23 +1,31 @@
-const http = require('http');
-
 const express = require('express');
+const bodyParser = require('body-parser');
 
+// Initiate the Express app, and then have it listen on port 3000.
 const app = express();
+app.listen(3000);
 
-app.use((req, res, next) => {
-  console.log('In middleware 1');
-  next();
+// Add body-parser middleware.
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use('/user', (req, res, next) => {
+  res.send('Users page!');
 });
 
-app.use((req, res, next) => {
-  console.log('In middleware 2');
-  next();
+app.post('/add', (req, res, next) => {
+  res.send(`
+    <form method="POST" action="/add-product">
+      <input type="text" name="title" />
+      <button type="submit">Add product</button>
+    </form>
+  `);
 });
 
-app.use((req, res, next) => {
-  console.log('In middleware 3');
+app.use('/add-product', (req, res, next) => {
+  console.log(req.body);
+  res.redirect('/');
 });
 
-const server = http.createServer(app);
-
-server.listen(3000, 'localhost');
+app.use('/', (req, res, next) => {
+  res.send('<h1>Title!</h1><a href="/add">Add product</a>');
+});
