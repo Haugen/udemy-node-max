@@ -1,11 +1,6 @@
-const http = require('http');
 const fs = require('fs');
 
-const server = http.createServer((req, res) => {
-  // console.log('URL', req.url);
-  // console.log('Method', req.method);
-  // console.log('Headers', req.headers);
-
+module.exports = (req, res) => {
   const URL = req.url;
   const METHOD = req.method;
 
@@ -21,14 +16,15 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => {
       body.push(chunk);
     });
-    req.on('end', () => {
+    return req.on('end', () => {
       const parsedBody = Buffer.concat(body).toString();
       const message = parsedBody.split('=')[1];
-      fs.writeFileSync('data.txt', message);
+      fs.writeFile('data.txt', message, error => {
+        res.statusCode = 302;
+        res.setHeader('Location', '/');
+        res.end();
+      });
     });
-    res.statusCode = 302;
-    res.setHeader('Location', '/');
-    return res.end();
   } else if (URL === '/json') {
     res.setHeader('Content-Type', 'application/json');
     res.write(`{
@@ -51,9 +47,7 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
 
-  // res.write('<h1>Some unknown page</h1>');
-  // res.write('<a href="/">Head back home</a>');
-  // res.end();
-});
-
-server.listen(3000, 'localhost');
+  res.write('<h1>Some unknown page</h1>');
+  res.write('<a href="/">Head back home</a>');
+  res.end();
+};
