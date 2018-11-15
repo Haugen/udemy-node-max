@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-module.exports = (req, res) => {
+const routes = (req, res) => {
   const URL = req.url;
   const METHOD = req.method;
 
@@ -51,3 +51,5 @@ module.exports = (req, res) => {
   res.write('<a href="/">Head back home</a>');
   res.end();
 };
+
+module.exports = routes;
