@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <% include ../partials/head %>
+    <%- include('../partials/head') %>
   </head>
   <body>
-    <header><% include ../partials/header-navbar %></header>
+    <header>
+      <% include ../partials/header-navbar %>
+    </header>
 
     <main class="container">
       <h1><%= title %></h1>
@@ -13,5 +12,4 @@
         <button type="submit">Add product</button>
       </form>
     </main>
-  </body>
-</html>
+  <%- include('../partials/tail') %>

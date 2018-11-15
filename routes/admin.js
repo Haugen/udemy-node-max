@@ -3,20 +3,21 @@ const fs = require('fs');
 
 const express = require('express');
 
-const rootDir = require('../util/path');
-
 const router = express.Router();
+
+const products = [];
 
 router.get('/add', (req, res) => {
   res.render('pages/add-product', {
-    title: 'Add product'
+    title: 'Add product',
+    path: '/admin/add'
   });
 });
 
 router.post('/add-product', (req, res) => {
-  fs.writeFile('product.txt', req.body.title, error => {
-    res.redirect('/');
-  });
+  products.push(req.body.title);
+  res.redirect('/');
 });
 
-module.exports = router;
+module.exports.router = router;
+module.exports.products = products;
