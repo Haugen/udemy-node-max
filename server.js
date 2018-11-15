@@ -11,6 +11,9 @@ const rootDir = require('./util/path');
 const app = express();
 app.listen(3000);
 
+// Setting the template engine to EJS.
+app.set('view engine', 'ejs');
+
 // Add body-parser middleware.
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -24,5 +27,5 @@ app.use('/admin', adminRoutes);
 // If a URL is not caught by the routers above, use 404 response below.
 app.use('/', (req, res) => {
   res.status(404);
-  res.sendFile(path.join(rootDir, 'views', '404.html'));
+  res.render('pages/404');
 });
