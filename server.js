@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const adminObj = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 // Initiate the Express app, and then have it listen on port 3000.
@@ -21,12 +21,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Using two separate custom Express routers.
 app.use(shopRoutes);
-app.use('/admin', adminObj.router);
+app.use('/admin', adminRoutes);
 
 // If a URL is not caught by the routers above, use 404 response below.
 app.use('/', (req, res) => {
-  res.status(404);
-  res.render('pages/404', {
+  res.status(404).render('pages/404', {
     title: 'Page not found.',
     path: ''
   });
