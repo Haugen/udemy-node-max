@@ -7,6 +7,24 @@
 
   <main class="container">
     <h1><%= title %></h1>
-    <p>Items</p>
+
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Item price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Total</th>
+          <th scope="col">Controls</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let product of products) { %>
+          <%- include('../partials/cart-item', { product: product }) %>
+        <% } %>
+      </tbody>
+    </table>
+
+    <p>Total price: <strong>$<%= totalPrice %></strong></p>
   </main>
 <%- include('../partials/tail') %>

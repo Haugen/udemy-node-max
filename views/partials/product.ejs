@@ -1,4 +1,4 @@
-<div class="col-12 col-sm-6 col-lg-4">
+<div class="col-12 col-sm-6 col-lg-4 mb-4">
   <div class="card">
     <img class="card-img-top" src="<%= imageURL %>" alt="<%= title %>">
     <div class="card-body">
@@ -14,7 +14,7 @@
         <a href="#" class="btn btn-secondary float-right">Edit</a>
 
       <% } else { %>
-      <form method="POST" action="/add-to-cart">
+      <form class="float-right" method="POST" action="/add-to-cart">
         <input type="hidden" name="productId" value="<%= id %>" />
         <button class="btn btn-primary" type="submit">Add to cart</button>
       </form>

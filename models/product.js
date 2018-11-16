@@ -1,20 +1,8 @@
 const fs = require('fs');
-const path = require('path');
 
 const uniqid = require('uniqid');
 
-const rootPath = require('../util/path');
-
-const getProductsFromFile = callback => {
-  const filePath = path.join(rootPath, 'data', 'products.json');
-  fs.readFile(filePath, (error, fileData) => {
-    if (!error) {
-      callback(JSON.parse(fileData), filePath);
-    } else {
-      callback([], filePath);
-    }
-  });
-};
+const getDataFromFile = require('../util/getDataFromFile');
 
 module.exports = class Product {
   constructor(title, imageURL, description, price) {
@@ -26,7 +14,7 @@ module.exports = class Product {
 
   save() {
     this.id = uniqid();
-    getProductsFromFile((products, filePath) => {
+    getDataFromFile('products.json', (products, filePath) => {
       products.push(this);
       fs.writeFile(filePath, JSON.stringify(products), error => {
         if (error) {
@@ -37,11 +25,11 @@ module.exports = class Product {
   }
 
   static getAllProducts(callback) {
-    getProductsFromFile(callback);
+    getDataFromFile('products.json', callback);
   }
 
   static getProductById(productId, callback) {
-    getProductsFromFile(products => {
+    getDataFromFile('products.json', products => {
       const product = products.find(p => p.id === productId);
       callback(product);
     });

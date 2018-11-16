@@ -12,7 +12,7 @@ exports.postAddProduct = (req, res) => {
     req.body.title,
     req.body.imageUrl,
     req.body.description,
-    req.body.price
+    Number(req.body.price)
   );
   product.save();
   res.redirect('/');
