@@ -1,14 +1,1 @@
-[
-  {
-    "title": "Another product",
-    "imageURL": "https://via.placeholder.com/300",
-    "description": "Some longer description maybe",
-    "price": "45"
-  },
-  {
-    "title": "New product",
-    "imageURL": "https://via.placeholder.com/300",
-    "description": "This is our new product. Much nice. Such happy!",
-    "price": "99"
-  }
-]
+[{"title":"new","imageURL":"https://via.placeholder.com/300","description":"Description","price":"4","id":"15m31x7jok5mscn"},{"title":"Another product","imageURL":"https://via.placeholder.com/300","description":"This product is really nice.","price":"66","id":"15m32gxjok6m86q"},{"title":"Book","imageURL":"https://via.placeholder.com/300","description":"The best book!","price":"29","id":"15m32zjjok7proh"}]

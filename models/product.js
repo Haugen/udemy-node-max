@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const uniqid = require('uniqid');
+
 const rootPath = require('../util/path');
 
 const getProductsFromFile = callback => {
@@ -23,6 +25,7 @@ module.exports = class Product {
   }
 
   save() {
+    this.id = uniqid();
     getProductsFromFile((products, filePath) => {
       products.push(this);
       fs.writeFile(filePath, JSON.stringify(products), error => {
@@ -35,5 +38,12 @@ module.exports = class Product {
 
   static getAllProducts(callback) {
     getProductsFromFile(callback);
+  }
+
+  static getProductById(productId, callback) {
+    getProductsFromFile(products => {
+      const product = products.find(p => p.id === productId);
+      callback(product);
+    });
   }
 };

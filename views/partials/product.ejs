@@ -5,15 +5,19 @@
       <h5 class="card-title"><%= title %></h5>
       <p class="card-text"><%= description %></p>
       <strong>$<%= price %></strong>
+      <a href="/products/<%= id %>">Details</a>
+
       <% if (admin) { %>
         <form method="POST" action="admin/delete-product" class="float-right ml-2">
           <button type="submit" class="btn btn-warning">Delete</button>
         </form>
         <a href="#" class="btn btn-secondary float-right">Edit</a>
+
       <% } else { %>
-        <form method="POST" action="add-to-cart">
-          <button class="btn btn-primary float-right">Add to Cart</button>
-        </form>
+      <form method="POST" action="/add-to-cart">
+        <input type="hidden" name="productId" value="<%= id %>" />
+        <button class="btn btn-primary" type="submit">Add to cart</button>
+      </form>
       <% } %>
     </div>
   </div>

@@ -20,11 +20,30 @@ exports.getProducts = (req, res) => {
   });
 };
 
+exports.getProduct = (req, res) => {
+  Product.getProductById(req.params.productId, product => {
+    if (product) {
+      res.render('shop/product-detail', {
+        title: product.title,
+        path: '/products',
+        product: product
+      });
+    } else {
+      res.redirect('/404');
+    }
+  });
+};
+
 exports.getCart = (req, res) => {
   res.render('shop/cart', {
     title: 'Shopping Cart',
     path: '/cart'
   });
+};
+
+exports.postCart = (req, res) => {
+  console.log(req.body.productId);
+  res.redirect('/cart');
 };
 
 exports.getOrders = (req, res) => {

@@ -1,12 +1,18 @@
-<%- include('partials/head') %>
+<%- include('../partials/head') %>
 </head>
 <body>
   <header>
-    <%- include('partials/header-navbar') %>
+    <%- include('../partials/header-navbar') %>
   </header>
 
-  <main class="container">
-    <h1>Product name</h1>
-    <p>Detail page for a product.</p>
+  <main class="container product-detail">
+    <h1><%= product.title %></h1>
+    <p><img class="card-img-top" src="<%= product.imageURL %>" alt="<%= product.title %>" /></p>
+    <p><%= product.description %></p>
+    <strong>$<%= product.price %></strong>
+    <form method="POST" action="/add-to-cart">
+      <input type="hidden" name="productId" value="<%= product.id %>" />
+      <button class="btn btn-primary" type="submit">Add to cart</button>
+    </form>
   </main>
-<%- include('partials/tail') %>
+<%- include('../partials/tail') %>
