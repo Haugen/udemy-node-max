@@ -7,18 +7,15 @@
 
   <main class="container">
     <h1><%= title %></h1>
-    <% if (products.length > 0) { %>
-      <% for (let product of products) { %>
-        <%- include('../partials/product', {
-          title: product.title,
-          imageURL: product.imageURL,
-          description: product.description,
-          price: product.price,
-          admin: false
+    <div class="row">
+      <% if (products.length > 0) { %>
+        <%- include('../partials/product-list', {
+          products: products,
+          adminView: false
         }) %>
+      <% } else { %>
+        <p>No products yet!</p>
       <% } %>
-    <% } else { %>
-      <p>No products yet!</p>
-    <% } %>
+    </div>
   </main>
 <%- include('../partials/tail') %>

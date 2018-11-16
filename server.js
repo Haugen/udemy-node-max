@@ -25,7 +25,7 @@ app.use('/admin', adminRoutes);
 
 // If a URL is not caught by the routers above, use 404 response below.
 app.use('/', (req, res) => {
-  res.status(404).render('pages/404', {
+  res.status(404).render('404', {
     title: 'Page not found.',
     path: ''
   });

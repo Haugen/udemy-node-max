@@ -4,5 +4,11 @@
     "imageURL": "https://via.placeholder.com/300",
     "description": "Some longer description maybe",
     "price": "45"
+  },
+  {
+    "title": "New product",
+    "imageURL": "https://via.placeholder.com/300",
+    "description": "This is our new product. Much nice. Such happy!",
+    "price": "99"
   }
 ]

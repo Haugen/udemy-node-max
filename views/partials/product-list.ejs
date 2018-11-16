@@ -1,0 +1,10 @@
+
+<% for (let product of products) { %>
+  <%- include('product', {
+    title: product.title,
+    imageURL: product.imageURL,
+    description: product.description,
+    price: product.price,
+    admin: adminView
+  }) %>
+<% } %>
