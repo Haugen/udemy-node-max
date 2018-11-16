@@ -8,10 +8,10 @@
       <a href="/products/<%= id %>">Details</a>
 
       <% if (admin) { %>
-        <form method="POST" action="admin/delete-product" class="float-right ml-2">
+        <form method="POST" action="admin/delete-product/<%= id %>" class="float-right ml-2">
           <button type="submit" class="btn btn-warning">Delete</button>
         </form>
-        <a href="#" class="btn btn-secondary float-right">Edit</a>
+        <a href="/admin/products/edit/<%= id %>" class="btn btn-secondary float-right">Edit</a>
 
       <% } else { %>
       <form class="float-right" method="POST" action="/add-to-cart">
