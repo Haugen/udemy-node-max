@@ -8,23 +8,34 @@
   <main class="container">
     <h1><%= title %></h1>
 
-    <form method="POST" action="/admin/add-product">
+    <% 
+      const action = editMode ? '/admin/products/edit' : '/admin/add-product';
+      const prodTitle = editMode ? product.title : '';
+      const imageURL = editMode ? product.imageURL : '';
+      const description = editMode ? product.description : '';
+      const price = editMode ? product.price : '';
+    %>
+
+    <form method="POST" action="<%= action %>">
       <div class="form-group">
         <label for="title">Product title</label>
-        <input type="text" class="form-control" id="title" name="title">
+        <input type="text" class="form-control" id="title" name="title" value="<%= prodTitle %>">
       </div>
       <div class="form-group">
         <label for="image-url">Image URL</label>
-        <input type="text" class="form-control" id="image-url" name="imageUrl">
+        <input type="text" class="form-control" id="image-url" name="imageUrl" value="<%- imageURL %>">
       </div>
       <div class="form-group">
         <label for="description">Product description</label>
-        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        <textarea class="form-control" id="description" name="description" rows="3"><%= description %></textarea>
       </div>
       <div class="form-group">
         <label for="price">Price</label>
-        <input type="number" step="0.01" class="form-control" id="price" name="price">
+        <input type="number" step="0.01" class="form-control" id="price" name="price" value="<%= price %>">
       </div>
+      <% if (editMode) { %>
+        <input type="hidden" name="id" value="<%= product.id %>" />
+      <% } %>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 

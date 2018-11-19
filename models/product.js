@@ -5,7 +5,8 @@ const uniqid = require('uniqid');
 const getDataFromFile = require('../util/getDataFromFile');
 
 module.exports = class Product {
-  constructor(title, imageURL, description, price) {
+  constructor(id, title, imageURL, description, price) {
+    this.id = id;
     this.title = title;
     this.imageURL = imageURL;
     this.description = description;
@@ -13,10 +14,18 @@ module.exports = class Product {
   }
 
   save() {
-    this.id = uniqid();
     getDataFromFile('products.json', (products, filePath) => {
-      products.push(this);
-      fs.writeFile(filePath, JSON.stringify(products), error => {
+      let newProducts;
+      if (this.id) {
+        const productIndex = products.findIndex(prod => prod.id === this.id);
+        newProducts = [...products];
+        newProducts[productIndex] = this;
+      } else {
+        this.id = uniqid();
+        newProducts = products.push(this);
+      }
+
+      fs.writeFile(filePath, JSON.stringify(newProducts), error => {
         if (error) {
           console.log(error);
         }

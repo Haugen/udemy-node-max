@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const siteMessages = require('./util/messages');
 
 // Initiate the Express app, and then have it listen on port 3000.
 const app = express();
