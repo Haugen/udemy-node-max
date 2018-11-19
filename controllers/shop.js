@@ -30,6 +30,11 @@ exports.getProduct = (req, res) => {
         product: product
       });
     } else {
+      req.session.siteMessages.push({
+        type: 'warning',
+        message: 'Product not found.'
+      });
+
       res.redirect('/404');
     }
   });

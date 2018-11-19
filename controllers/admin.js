@@ -18,6 +18,11 @@ exports.getEditProduct = (req, res) => {
         editMode: true
       });
     } else {
+      req.session.siteMessages.push({
+        type: 'warning',
+        message: 'Couldn\t find product.'
+      });
+
       res.redirect('/404');
     }
   });
@@ -32,6 +37,12 @@ exports.postAddProduct = (req, res) => {
     Number(req.body.price)
   );
   product.save();
+
+  req.session.siteMessages.push({
+    type: 'success',
+    message: 'Product successfully added.'
+  });
+
   res.redirect('/');
 };
 
@@ -44,6 +55,12 @@ exports.postEditProduct = (req, res) => {
     Number(req.body.price)
   );
   product.save();
+
+  req.session.siteMessages.push({
+    type: 'success',
+    message: 'Product successfully edited.'
+  });
+
   res.redirect(`/admin/products/edit/${req.body.id}`);
 };
 

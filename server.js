@@ -2,10 +2,11 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-const siteMessages = require('./util/messages');
 
 // Initiate the Express app, and then have it listen on port 3000.
 const app = express();
@@ -14,11 +15,31 @@ app.listen(3000);
 // Setting the template engine to EJS.
 app.set('view engine', 'ejs');
 
+// Setting up session and cookie storage.
+const sessionStore = new session.MemoryStore();
+app.use(cookieParser('some secret'));
+app.use(
+  session({
+    cookie: { maxAge: 60000 },
+    store: sessionStore,
+    saveUninitialized: true,
+    resave: 'true',
+    secret: 'some secret'
+  })
+);
+
 // Add body-parser middleware.
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Telling Express to serve "public" folder content publically.
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Custom flash message middleware.
+app.use('/', (req, res, next) => {
+  res.locals.siteMessages = req.session.siteMessages || [];
+  req.session.siteMessages = [];
+  next();
+});
 
 // Using two separate custom Express routers.
 app.use(shopRoutes);

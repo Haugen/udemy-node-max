@@ -1,0 +1,9 @@
+<div class="col-12">
+  <% if (siteMessages.length > 0) { %>
+    <% for (let message of siteMessages) { %>
+      <div class="alert alert-<%= message.type %>" role="alert">
+        <%= message.message %>
+      </div>
+    <% } %>
+  <% } %>
+</div>
