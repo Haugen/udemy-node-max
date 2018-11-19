@@ -3,6 +3,7 @@ const fs = require('fs');
 const uniqid = require('uniqid');
 
 const getDataFromFile = require('../util/getDataFromFile');
+const Cart = require('./cart');
 
 module.exports = class Product {
   constructor(id, title, imageURL, description, price) {
@@ -41,6 +42,7 @@ module.exports = class Product {
         return callback({ message: 'Product not found.' });
 
       products.splice(indexToDelete, 1);
+      Cart.removeProduct(productId);
 
       fs.writeFile(filePath, JSON.stringify(products), error => {
         if (error) {

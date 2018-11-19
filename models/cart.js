@@ -30,6 +30,23 @@ module.exports = class Cart {
     });
   }
 
+  static removeProduct(id) {
+    getDataFromFile('cart.json', (fileData, filePath) => {
+      const product = fileData.products.find(prod => prod.id === id);
+      if (product) {
+        fileData.totalPrice -= product.price * product.quantity;
+        const newProducts = fileData.products.filter(prod => prod.id !== id);
+        fileData.products = newProducts;
+
+        fs.writeFile(filePath, JSON.stringify(fileData), error => {
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
+    });
+  }
+
   static getCart(callback) {
     getDataFromFile('cart.json', fileData => {
       callback(fileData);
