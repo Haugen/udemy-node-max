@@ -34,6 +34,24 @@ module.exports = class Product {
     });
   }
 
+  static delete(productId, callback) {
+    getDataFromFile('products.json', (products, filePath) => {
+      const indexToDelete = products.findIndex(prod => prod.id === productId);
+      if (indexToDelete === -1)
+        return callback({ message: 'Product not found.' });
+
+      products.splice(indexToDelete, 1);
+
+      fs.writeFile(filePath, JSON.stringify(products), error => {
+        if (error) {
+          callback(error);
+        } else {
+          callback();
+        }
+      });
+    });
+  }
+
   static getAllProducts(callback) {
     getDataFromFile('products.json', callback);
   }

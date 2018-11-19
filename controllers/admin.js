@@ -58,10 +58,27 @@ exports.postEditProduct = (req, res) => {
 
   req.session.siteMessages.push({
     type: 'success',
-    message: 'Product successfully edited.'
+    message: 'Product successfully updated.'
   });
 
-  res.redirect(`/admin/products/edit/${req.body.id}`);
+  res.redirect('/admin/products');
+};
+
+exports.postDeleteProduct = (req, res) => {
+  Product.delete(req.body.productId, error => {
+    if (error) {
+      req.session.siteMessages.push({
+        type: 'warning',
+        message: error.message
+      });
+    } else {
+      req.session.siteMessages.push({
+        type: 'success',
+        message: 'Product deleted.'
+      });
+    }
+    res.redirect('/admin/products');
+  });
 };
 
 exports.getAdminProducts = (req, res) => {
