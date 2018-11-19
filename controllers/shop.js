@@ -51,6 +51,27 @@ exports.getCart = (req, res) => {
   });
 };
 
+exports.getIncreaseQuantity = (req, res) => {
+  Cart.adjustQuantity(req.params.id, 'increase', error => {
+    if (!error) {
+      res.redirect('/cart');
+    }
+  });
+};
+
+exports.getDecreaseQuantity = (req, res) => {
+  Cart.adjustQuantity(req.params.id, 'decrease', error => {
+    if (!error) {
+      res.redirect('/cart');
+    }
+  });
+};
+
+exports.getCartRemove = (req, res) => {
+  Cart.removeProduct(req.params.id);
+  res.redirect('/cart');
+};
+
 exports.postCart = (req, res) => {
   Product.getProductById(req.body.productId, product => {
     if (product) {

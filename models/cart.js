@@ -47,6 +47,36 @@ module.exports = class Cart {
     });
   }
 
+  static adjustQuantity(id, operation, callback) {
+    getDataFromFile('cart.json', (fileData, filePath) => {
+      const productIndex = fileData.products.findIndex(prod => prod.id === id);
+
+      if (productIndex !== -1) {
+        if (operation === 'increase') {
+          fileData.totalPrice += fileData.products[productIndex].price;
+          fileData.products[productIndex].quantity++;
+        } else if (operation === 'decrease') {
+          if (fileData.products[productIndex].quantity <= 1) {
+            this.removeProduct(fileData.products[productIndex].id);
+          } else {
+            fileData.totalPrice -= fileData.products[productIndex].price;
+            fileData.products[productIndex].quantity--;
+          }
+        }
+
+        fs.writeFile(filePath, JSON.stringify(fileData), error => {
+          if (error) {
+            callback(error);
+          } else {
+            callback();
+          }
+        });
+      }
+    });
+  }
+
+  static decrementProduct(id) {}
+
   static getCart(callback) {
     getDataFromFile('cart.json', fileData => {
       callback(fileData);
