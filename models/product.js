@@ -22,7 +22,8 @@ module.exports = class Product {
         newProducts[productIndex] = this;
       } else {
         this.id = uniqid();
-        newProducts = products.push(this);
+        products.push(this);
+        newProducts = products;
       }
 
       fs.writeFile(filePath, JSON.stringify(newProducts), error => {
