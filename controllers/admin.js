@@ -1,3 +1,5 @@
+const mongodb = require('mongodb');
+
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res) => {
@@ -9,23 +11,24 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.getEditProduct = (req, res) => {
-  Product.getProductById(req.params.id, product => {
-    if (product) {
+  Product.getProductById(req.params.id)
+    .then(product => {
       res.render('admin/edit-product', {
         title: `Edit "${product.title}"`,
         path: '/admin/edit-product',
         product: product,
         editMode: true
       });
-    } else {
+    })
+    .catch(error => {
+      console.log(error);
       req.session.siteMessages.push({
         type: 'warning',
         message: 'Couldn\t find product.'
       });
 
       res.redirect('/404');
-    }
-  });
+    });
 };
 
 exports.postAddProduct = (req, res) => {
@@ -48,20 +51,20 @@ exports.postAddProduct = (req, res) => {
 
 exports.postEditProduct = (req, res) => {
   const product = new Product(
-    req.body.id,
     req.body.title,
     req.body.imageUrl,
     req.body.description,
-    Number(req.body.price)
+    Number(req.body.price),
+    new mongodb.ObjectID(req.body._id)
   );
-  product.save();
+  product.save().then(() => {
+    req.session.siteMessages.push({
+      type: 'success',
+      message: 'Product successfully updated.'
+    });
 
-  req.session.siteMessages.push({
-    type: 'success',
-    message: 'Product successfully updated.'
+    res.redirect('/admin/products');
   });
-
-  res.redirect('/admin/products');
 };
 
 exports.postDeleteProduct = (req, res) => {

@@ -7,20 +7,27 @@ const Cart = require('./cart');
 const { getDb } = require('../util/database');
 
 module.exports = class Product {
-  constructor(title, imageURL, description, price) {
+  constructor(title, imageURL, description, price, id) {
     this.title = title;
     this.imageURL = imageURL;
     this.description = description;
     this.price = price;
+    this._id = id;
   }
 
   save() {
     const db = getDb();
+    let dbOperation;
 
-    return db
-      .collection('products')
-      .insertOne(this)
-      .catch(error => console.log(error));
+    if (this._id) {
+      dbOperation = db
+        .collection('products')
+        .updateOne({ _id: this._id }, { $set: this });
+    } else {
+      dbOperation = db.collection('products').insertOne(this);
+    }
+
+    return dbOperation.catch(error => console.log(error));
   }
 
   static delete(productId, callback) {
