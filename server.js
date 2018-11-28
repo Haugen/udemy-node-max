@@ -7,10 +7,13 @@ const session = require('express-session');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const { mongoConnect } = require('./util/database');
 
-// Initiate the Express app, and then have it listen on port 3000.
+// Initiate the Express app, connect to mongoDB, and then listen on port 3000.
 const app = express();
-app.listen(3000);
+mongoConnect(() => {
+  app.listen(3000);
+});
 
 // Setting the template engine to EJS.
 app.set('view engine', 'ejs');

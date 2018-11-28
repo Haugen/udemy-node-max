@@ -1,13 +1,13 @@
 const fs = require('fs');
 
-const uniqid = require('uniqid');
+const mongodb = require('mongodb');
 
 const getDataFromFile = require('../util/getDataFromFile');
 const Cart = require('./cart');
+const { getDb } = require('../util/database');
 
 module.exports = class Product {
-  constructor(id, title, imageURL, description, price) {
-    this.id = id;
+  constructor(title, imageURL, description, price) {
     this.title = title;
     this.imageURL = imageURL;
     this.description = description;
@@ -15,24 +15,12 @@ module.exports = class Product {
   }
 
   save() {
-    getDataFromFile('products.json', (products, filePath) => {
-      let newProducts;
-      if (this.id) {
-        const productIndex = products.findIndex(prod => prod.id === this.id);
-        newProducts = [...products];
-        newProducts[productIndex] = this;
-      } else {
-        this.id = uniqid();
-        products.push(this);
-        newProducts = products;
-      }
+    const db = getDb();
 
-      fs.writeFile(filePath, JSON.stringify(newProducts), error => {
-        if (error) {
-          console.log(error);
-        }
-      });
-    });
+    return db
+      .collection('products')
+      .insertOne(this)
+      .catch(error => console.log(error));
   }
 
   static delete(productId, callback) {
@@ -54,14 +42,19 @@ module.exports = class Product {
     });
   }
 
-  static getAllProducts(callback) {
-    getDataFromFile('products.json', callback);
+  static getAllProducts() {
+    const db = getDb();
+    return db
+      .collection('products')
+      .find()
+      .toArray();
   }
 
-  static getProductById(productId, callback) {
-    getDataFromFile('products.json', products => {
-      const product = products.find(p => p.id === productId);
-      callback(product);
-    });
+  static getProductById(productId) {
+    const db = getDb();
+    return db
+      .collection('products')
+      .find({ _id: new mongodb.ObjectID(productId) })
+      .next();
   }
 };

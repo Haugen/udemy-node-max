@@ -36,14 +36,14 @@ exports.postAddProduct = (req, res) => {
     req.body.description,
     Number(req.body.price)
   );
-  product.save();
+  product.save().then(() => {
+    req.session.siteMessages.push({
+      type: 'success',
+      message: 'Product successfully added.'
+    });
 
-  req.session.siteMessages.push({
-    type: 'success',
-    message: 'Product successfully added.'
+    res.redirect('/');
   });
-
-  res.redirect('/');
 };
 
 exports.postEditProduct = (req, res) => {
@@ -82,11 +82,15 @@ exports.postDeleteProduct = (req, res) => {
 };
 
 exports.getAdminProducts = (req, res) => {
-  Product.getAllProducts(products => {
-    res.render('admin/admin-product-list', {
-      title: 'Product list',
-      path: '/admin/products',
-      products: products
+  Product.getAllProducts()
+    .then(products => {
+      res.render('admin/admin-product-list', {
+        title: 'Product list',
+        path: '/admin/products',
+        products: products
+      });
+    })
+    .catch(error => {
+      console.log(error);
     });
-  });
 };

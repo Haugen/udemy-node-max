@@ -2,42 +2,52 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getFront = (req, res) => {
-  Product.getAllProducts(products => {
-    res.render('shop/index', {
-      title: 'Welcome to my shop',
-      path: '/',
-      products: products
+  Product.getAllProducts()
+    .then(products => {
+      console.log(products);
+      res.render('shop/index', {
+        title: 'Welcome to my shop',
+        path: '/',
+        products: products
+      });
+    })
+    .catch(error => {
+      console.log(error);
     });
-  });
 };
 
 exports.getProducts = (req, res) => {
-  Product.getAllProducts(products => {
-    res.render('shop/product-list', {
-      title: 'Product list',
-      path: '/products',
-      products: products
+  Product.getAllProducts()
+    .then(products => {
+      res.render('shop/product-list', {
+        title: 'Product list',
+        path: '/products',
+        products: products
+      });
+    })
+    .catch(error => {
+      console.log(error);
     });
-  });
 };
 
 exports.getProduct = (req, res) => {
-  Product.getProductById(req.params.productId, product => {
-    if (product) {
+  Product.getProductById(req.params.productId)
+    .then(product => {
       res.render('shop/product-detail', {
         title: product.title,
         path: '/products',
         product: product
       });
-    } else {
+    })
+    .catch(error => {
+      console.log(error);
       req.session.siteMessages.push({
         type: 'warning',
         message: 'Product not found.'
       });
 
       res.redirect('/404');
-    }
-  });
+    });
 };
 
 exports.getCart = (req, res) => {
