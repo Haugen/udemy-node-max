@@ -33,11 +33,10 @@ exports.getEditProduct = (req, res) => {
 
 exports.postAddProduct = (req, res) => {
   const product = new Product(
-    null,
     req.body.title,
     req.body.imageUrl,
     req.body.description,
-    Number(req.body.price)
+    req.body.price
   );
   product.save().then(() => {
     req.session.siteMessages.push({
@@ -54,8 +53,8 @@ exports.postEditProduct = (req, res) => {
     req.body.title,
     req.body.imageUrl,
     req.body.description,
-    Number(req.body.price),
-    new mongodb.ObjectID(req.body._id)
+    req.body.price,
+    req.body._id
   );
   product.save().then(() => {
     req.session.siteMessages.push({

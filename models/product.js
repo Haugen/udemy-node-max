@@ -11,8 +11,8 @@ module.exports = class Product {
     this.title = title;
     this.imageURL = imageURL;
     this.description = description;
-    this.price = price;
-    this._id = id;
+    this.price = Number(price);
+    this._id = new mongodb.ObjectID(id);
   }
 
   save() {
