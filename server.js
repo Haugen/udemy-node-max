@@ -9,6 +9,9 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const { mongoConnect } = require('./util/database');
 
+// Made .env file available
+require('dotenv').config();
+
 // Initiate the Express app, connect to mongoDB, and then listen on port 3000.
 const app = express();
 mongoConnect(() => {

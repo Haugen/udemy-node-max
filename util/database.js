@@ -5,7 +5,9 @@ let _db;
 
 const mongoConnect = callback => {
   MongoClient.connect(
-    'mongodb+srv://root:4lTAKbP8lL3Ux5Xt@udemy-node-s3ewq.mongodb.net/shop?retryWrites=true',
+    `mongodb+srv://root:${
+      process.env.MONGO_DB_PASSWORD
+    }@udemy-node-s3ewq.mongodb.net/shop?retryWrites=true`,
     { useNewUrlParser: true }
   )
     .then(client => {

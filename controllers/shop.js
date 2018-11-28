@@ -4,7 +4,6 @@ const Cart = require('../models/cart');
 exports.getFront = (req, res) => {
   Product.getAllProducts()
     .then(products => {
-      console.log(products);
       res.render('shop/index', {
         title: 'Welcome to my shop',
         path: '/',
