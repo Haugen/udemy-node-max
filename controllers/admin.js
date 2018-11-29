@@ -1,6 +1,5 @@
-const mongodb = require('mongodb');
-
 const Product = require('../models/product');
+const User = require('../models/user');
 
 exports.getAddProduct = (req, res) => {
   res.render('admin/edit-product', {
@@ -36,7 +35,9 @@ exports.postAddProduct = (req, res) => {
     req.body.title,
     req.body.imageUrl,
     req.body.description,
-    req.body.price
+    req.body.price,
+    null,
+    req.user._id
   );
   product.save().then(() => {
     req.session.siteMessages.push({
@@ -44,7 +45,7 @@ exports.postAddProduct = (req, res) => {
       message: 'Product successfully added.'
     });
 
-    res.redirect('/');
+    res.redirect('/admin/products');
   });
 };
 
@@ -54,7 +55,8 @@ exports.postEditProduct = (req, res) => {
     req.body.imageUrl,
     req.body.description,
     req.body.price,
-    req.body._id
+    req.body._id,
+    req.user._id
   );
   product.save().then(() => {
     req.session.siteMessages.push({

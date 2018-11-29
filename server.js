@@ -8,14 +8,25 @@ const session = require('express-session');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const { mongoConnect } = require('./util/database');
+const User = require('./models/user');
 
 // Made .env file available
 require('dotenv').config();
 
-// Initiate the Express app, connect to mongoDB, and then listen on port 3000.
+// Initiate the express app.
 const app = express();
-mongoConnect(() => {
-  app.listen(3000);
+
+// Temporary get my demo user.
+app.use((req, res, next) => {
+  User.getUserById('5c000f0a1c9d44000025de2c')
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(error => {
+      console.log(error);
+      next();
+    });
 });
 
 // Setting the template engine to EJS.
@@ -57,4 +68,9 @@ app.use('/', (req, res) => {
     title: 'Page not found.',
     path: ''
   });
+});
+
+// Connect to mongoDB, and then listen on port 3000.
+mongoConnect(() => {
+  app.listen(3000);
 });
