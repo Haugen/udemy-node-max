@@ -1,9 +1,5 @@
-const fs = require('fs');
-
 const mongodb = require('mongodb');
 
-const getDataFromFile = require('../util/getDataFromFile');
-const Cart = require('./cart');
 const { getDb } = require('../util/database');
 
 module.exports = class Product {
@@ -12,7 +8,7 @@ module.exports = class Product {
     this.imageURL = imageURL;
     this.description = description;
     this.price = Number(price);
-    this._id = new mongodb.ObjectID(id);
+    this._id = id ? new mongodb.ObjectID(id) : null;
   }
 
   save() {
@@ -30,22 +26,10 @@ module.exports = class Product {
     return dbOperation.catch(error => console.log(error));
   }
 
-  static delete(productId, callback) {
-    getDataFromFile('products.json', (products, filePath) => {
-      const indexToDelete = products.findIndex(prod => prod.id === productId);
-      if (indexToDelete === -1)
-        return callback({ message: 'Product not found.' });
-
-      products.splice(indexToDelete, 1);
-      Cart.removeProduct(productId);
-
-      fs.writeFile(filePath, JSON.stringify(products), error => {
-        if (error) {
-          callback(error);
-        } else {
-          callback();
-        }
-      });
+  static delete(productId) {
+    const db = getDb();
+    return db.collection('products').deleteOne({
+      _id: new mongodb.ObjectID(productId)
     });
   }
 
