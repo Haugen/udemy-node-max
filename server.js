@@ -18,9 +18,9 @@ const app = express();
 
 // Temporary get my demo user.
 app.use((req, res, next) => {
-  User.getUserById('5c000f0a1c9d44000025de2c')
+  User.getUserById('5c0166891c9d4400005c7352')
     .then(user => {
-      req.user = user;
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch(error => {

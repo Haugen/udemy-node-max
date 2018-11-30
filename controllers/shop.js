@@ -82,14 +82,22 @@ exports.getCartRemove = (req, res) => {
 };
 
 exports.postCart = (req, res) => {
-  Product.getProductById(req.body.productId, product => {
-    if (product) {
-      Cart.addProduct(product);
-      res.redirect('/cart');
-    } else {
-      res.redirect('/404');
-    }
-  });
+  Product.getProductById(req.body.productId)
+    .then(product => {
+      return req.user.addToCart(product);
+    })
+    .then(() => {
+      res.redirect('/');
+    });
+
+  // Product.getProductById(req.body.productId, product => {
+  //   if (product) {
+  //     Cart.addProduct(product);
+  //     res.redirect('/cart');
+  //   } else {
+  //     res.redirect('/404');
+  //   }
+  // });
 };
 
 exports.getOrders = (req, res) => {
