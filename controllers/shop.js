@@ -77,8 +77,9 @@ exports.getDecreaseQuantity = (req, res) => {
 };
 
 exports.getCartRemove = (req, res) => {
-  Cart.removeProduct(req.params.id);
-  res.redirect('/cart');
+  req.user.removeProductFromCart(req.params.id).then(() => {
+    res.redirect('/cart');
+  });
 };
 
 exports.postCart = (req, res) => {
