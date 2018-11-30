@@ -45,12 +45,25 @@ class User {
         { _id: new mongodb.ObjectID(this._id) },
         { $set: { cart: updatedCart } }
       );
+  }
 
-    if (cartProduct => 0) {
-      // Product exists. Increment.
-    } else {
-      // Product doesn't exist. Add.
-    }
+  getCart() {
+    const db = getDb();
+    const cartProductIds = this.cart.items.map(product => product.productId);
+    return db
+      .collection('products')
+      .find({ _id: { $in: cartProductIds } })
+      .toArray()
+      .then(products => {
+        return products.map(product => {
+          return {
+            ...product,
+            quantity: this.cart.items.find(p => {
+              return p.productId.toString() === product._id.toString();
+            }).quantity
+          };
+        });
+      });
   }
 
   static getUserById(userId) {

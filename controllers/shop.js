@@ -50,12 +50,12 @@ exports.getProduct = (req, res) => {
 };
 
 exports.getCart = (req, res) => {
-  Cart.getCart(cart => {
+  req.user.getCart().then(cartItems => {
     res.render('shop/cart', {
       title: 'Shopping Cart',
       path: '/cart',
-      products: cart.products,
-      totalPrice: cart.totalPrice
+      products: cartItems
+      //totalPrice: cart.totalPrice
     });
   });
 };
@@ -89,15 +89,6 @@ exports.postCart = (req, res) => {
     .then(() => {
       res.redirect('/');
     });
-
-  // Product.getProductById(req.body.productId, product => {
-  //   if (product) {
-  //     Cart.addProduct(product);
-  //     res.redirect('/cart');
-  //   } else {
-  //     res.redirect('/404');
-  //   }
-  // });
 };
 
 exports.getOrders = (req, res) => {
