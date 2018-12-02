@@ -7,6 +7,15 @@
 
   <main class="container">
     <h1><%= title %></h1>
-    <p>Orders!</p>
+    <% for (let order of orders) { %>
+      <h5>Order #: <%= order._id %></h5>
+      <% for (let product of order.products) { %>
+        <p>
+          <%= product.title %>
+          <%= product.quantity %>
+          </p>
+      <% } %>
+      <hr />
+    <% } %>
   </main>
 <%- include('../partials/tail') %>

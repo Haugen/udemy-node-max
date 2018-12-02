@@ -104,8 +104,11 @@ exports.postOrder = (req, res) => {
 };
 
 exports.getOrders = (req, res) => {
-  res.render('shop/orders', {
-    title: 'Orders',
-    path: '/orders'
+  req.user.getOrders().then(orders => {
+    res.render('shop/orders', {
+      title: 'Orders',
+      path: '/orders',
+      orders: orders
+    });
   });
 };
