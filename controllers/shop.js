@@ -92,6 +92,17 @@ exports.postCart = (req, res) => {
     });
 };
 
+exports.postOrder = (req, res) => {
+  req.user
+    .createOrder()
+    .then(() => {
+      res.redirect('/orders');
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 exports.getOrders = (req, res) => {
   res.render('shop/orders', {
     title: 'Orders',

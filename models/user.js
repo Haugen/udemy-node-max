@@ -80,6 +80,22 @@ class User {
       );
   }
 
+  createOrder() {
+    const db = getDb();
+    return db
+      .collection('orders')
+      .insertOne(this.cart)
+      .then(() => {
+        this.cart = { items: [] };
+        return db
+          .collection('users')
+          .updateOne(
+            { _id: new mongodb.ObjectID(this._id) },
+            { $set: { cart: { items: [] } } }
+          );
+      });
+  }
+
   static getUserById(userId) {
     const db = getDb();
     return db
