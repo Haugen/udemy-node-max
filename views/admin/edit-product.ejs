@@ -11,7 +11,7 @@
     <% 
       const action = editMode ? '/admin/products/edit' : '/admin/add-product';
       const prodTitle = editMode ? product.title : '';
-      const imageURL = editMode ? product.imageURL : '';
+      const imageUrl = editMode ? product.imageUrl : '';
       const description = editMode ? product.description : '';
       const price = editMode ? product.price : '';
     %>
@@ -23,7 +23,7 @@
       </div>
       <div class="form-group">
         <label for="image-url">Image URL</label>
-        <input type="text" class="form-control" id="image-url" name="imageUrl" value="<%- imageURL %>">
+        <input type="text" class="form-control" id="image-url" name="imageUrl" value="<%- imageUrl %>">
       </div>
       <div class="form-group">
         <label for="description">Product description</label>

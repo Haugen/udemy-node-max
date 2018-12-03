@@ -2,7 +2,7 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getFront = (req, res) => {
-  Product.getAllProducts()
+  Product.find()
     .then(products => {
       res.render('shop/index', {
         title: 'Welcome to my shop',
@@ -16,7 +16,7 @@ exports.getFront = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  Product.getAllProducts()
+  Product.find()
     .then(products => {
       res.render('shop/product-list', {
         title: 'Product list',
@@ -30,7 +30,7 @@ exports.getProducts = (req, res) => {
 };
 
 exports.getProduct = (req, res) => {
-  Product.getProductById(req.params.productId)
+  Product.findById(req.params.productId)
     .then(product => {
       res.render('shop/product-detail', {
         title: product.title,

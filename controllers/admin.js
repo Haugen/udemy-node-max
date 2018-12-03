@@ -10,7 +10,7 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.getEditProduct = (req, res) => {
-  Product.getProductById(req.params.id)
+  Product.findById(req.params.id)
     .then(product => {
       res.render('admin/edit-product', {
         title: `Edit "${product.title}"`,
@@ -53,22 +53,22 @@ exports.postAddProduct = (req, res) => {
 };
 
 exports.postEditProduct = (req, res) => {
-  const product = new Product(
-    req.body.title,
-    req.body.imageUrl,
-    req.body.description,
-    req.body.price,
-    req.body._id,
-    req.user._id
-  );
-  product.save().then(() => {
-    req.session.siteMessages.push({
-      type: 'success',
-      message: 'Product successfully updated.'
-    });
+  Product.findById(req.body._id)
+    .then(product => {
+      product.title = req.body.title;
+      product.price = req.body.price;
+      product.imageUrl = req.body.imageUrl;
+      product.description = req.body.description;
+      return product.save();
+    })
+    .then(() => {
+      req.session.siteMessages.push({
+        type: 'success',
+        message: 'Product successfully updated.'
+      });
 
-    res.redirect('/admin/products');
-  });
+      res.redirect('/admin/products');
+    });
 };
 
 exports.postDeleteProduct = (req, res) => {
@@ -90,7 +90,7 @@ exports.postDeleteProduct = (req, res) => {
 };
 
 exports.getAdminProducts = (req, res) => {
-  Product.getAllProducts()
+  Product.find()
     .then(products => {
       res.render('admin/admin-product-list', {
         title: 'Product list',
