@@ -50,14 +50,17 @@ exports.getProduct = (req, res) => {
 };
 
 exports.getCart = (req, res) => {
-  req.user.getCart().then(cartItems => {
-    res.render('shop/cart', {
-      title: 'Shopping Cart',
-      path: '/cart',
-      products: cartItems
-      //totalPrice: cart.totalPrice
+  req.user
+    .populate('cart.items.product')
+    .execPopulate()
+    .then(user => {
+      res.render('shop/cart', {
+        title: 'Shopping Cart',
+        path: '/cart',
+        products: user.cart.items
+        //totalPrice: cart.totalPrice
+      });
     });
-  });
 };
 
 exports.getIncreaseQuantity = (req, res) => {
