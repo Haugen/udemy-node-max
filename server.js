@@ -4,11 +4,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const mongoose = require('mongoose');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-const { mongoConnect } = require('./util/database');
-const User = require('./models/user');
+// const User = require('./models/user');
 
 // Made .env file available
 require('dotenv').config();
@@ -17,17 +17,17 @@ require('dotenv').config();
 const app = express();
 
 // Temporary get my demo user.
-app.use((req, res, next) => {
-  User.getUserById('5c0166891c9d4400005c7352')
-    .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch(error => {
-      console.log(error);
-      next();
-    });
-});
+// app.use((req, res, next) => {
+//   User.getUserById('5c0166891c9d4400005c7352')
+//     .then(user => {
+//       req.user = new User(user.name, user.email, user.cart, user._id);
+//       next();
+//     })
+//     .catch(error => {
+//       console.log(error);
+//       next();
+//     });
+// });
 
 // Setting the template engine to EJS.
 app.set('view engine', 'ejs');
@@ -70,7 +70,16 @@ app.use('/', (req, res) => {
   });
 });
 
-// Connect to mongoDB, and then listen on port 3000.
-mongoConnect(() => {
-  app.listen(3000);
-});
+// Connect to db with Mongoose and start app on success.
+mongoose
+  .connect(
+    `mongodb+srv://root:${
+      process.env.MONGO_DB_PASSWORD
+    }@udemy-node-s3ewq.mongodb.net/shop?retryWrites=true`
+  )
+  .then(() => {
+    app.listen(3000);
+  })
+  .catch(error => {
+    console.log(error);
+  });

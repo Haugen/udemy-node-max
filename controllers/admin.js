@@ -31,22 +31,25 @@ exports.getEditProduct = (req, res) => {
 };
 
 exports.postAddProduct = (req, res) => {
-  const product = new Product(
-    req.body.title,
-    req.body.imageUrl,
-    req.body.description,
-    req.body.price,
-    null,
-    req.user._id
-  );
-  product.save().then(() => {
-    req.session.siteMessages.push({
-      type: 'success',
-      message: 'Product successfully added.'
-    });
-
-    res.redirect('/admin/products');
+  const product = new Product({
+    title: req.body.title,
+    price: req.body.price,
+    imageUrl: req.body.imageUrl,
+    description: req.body.description
   });
+  product
+    .save()
+    .then(() => {
+      req.session.siteMessages.push({
+        type: 'success',
+        message: 'Product successfully added.'
+      });
+
+      res.redirect('/admin/products');
+    })
+    .catch(error => {
+      console.log(error);
+    });
 };
 
 exports.postEditProduct = (req, res) => {
