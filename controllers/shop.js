@@ -83,7 +83,7 @@ exports.getCartRemove = (req, res) => {
 };
 
 exports.postCart = (req, res) => {
-  Product.getProductById(req.body.productId)
+  Product.findById(req.body.productId)
     .then(product => {
       return req.user.addToCart(product);
     })

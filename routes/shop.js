@@ -13,7 +13,7 @@ router.get('/products/:productId', shopController.getProduct);
 // router.get('/cart/decrease-quantity/:id', shopController.getDecreaseQuantity);
 // router.get('/orders', shopController.getOrders);
 
-// router.post('/add-to-cart', shopController.postCart);
+router.post('/add-to-cart', shopController.postCart);
 // router.post('/create-order', shopController.postOrder);
 
 module.exports = router;
