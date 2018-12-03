@@ -72,7 +72,7 @@ exports.postEditProduct = (req, res) => {
 };
 
 exports.postDeleteProduct = (req, res) => {
-  Product.delete(req.body.productId)
+  Product.findByIdAndDelete(req.body.productId)
     .then(() => {
       req.session.siteMessages.push({
         type: 'success',
