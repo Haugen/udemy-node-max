@@ -9,10 +9,11 @@
     <h1><%= title %></h1>
     <% for (let order of orders) { %>
       <h5>Order #: <%= order._id %></h5>
-      <% for (let product of order.products) { %>
+      <% for (let p of order.products) { %>
         <p>
-          <%= product.title %>
-          <%= product.quantity %>
+          <%= p.product.title %>
+          <%= p.quantity %>
+          Price: $<%= p.product.price * p.quantity %>
           </p>
       <% } %>
       <hr />
