@@ -15,6 +15,7 @@
         <a class="nav-link <%= path === '/products' ? 'active' : '' %>" href="/products">Products</a>
       </li>
 
+      <% if (isLoggedIn) { %>
       <li class="nav-item">
         <a class="nav-link <%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a>
       </li>
@@ -23,7 +24,6 @@
         <a class="nav-link <%= path === '/orders' ? 'active' : '' %>" href="/orders">Orders</a>
       </li>
 
-      <% if (isLoggedIn) { %>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Admin
@@ -37,9 +37,17 @@
     </ul>
 
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link <%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
-      </li>
+      <% if (!isLoggedIn) { %>
+        <li class="nav-item">
+          <a class="nav-link <%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
+        </li>
+      <% } else { %>
+        <li class="nav-item">
+          <form action="/logout" method="POST">
+            <button class="btn btn-secondary" type="submit">Logout</button>
+          </form>
+        </li>
+      <% } %>
     </ul>
   </div>
 </nav>

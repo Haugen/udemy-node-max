@@ -14,7 +14,7 @@
         </form>
         <a href="/admin/products/edit/<%= _id %>" class="btn btn-secondary float-right">Edit</a>
 
-      <% } else { %>
+      <% } else if (isLoggedIn) { %>
       <form class="float-right" method="POST" action="/add-to-cart">
         <input type="hidden" name="productId" value="<%= _id %>" />
         <button class="btn btn-primary" type="submit">Add to cart</button>

@@ -10,9 +10,11 @@
     <p><img class="card-img-top" src="<%= product.imageUrl %>" alt="<%= product.title %>" /></p>
     <p><%= product.description %></p>
     <strong>$<%= product.price %></strong>
-    <form method="POST" action="/add-to-cart">
-      <input type="hidden" name="productId" value="<%= product._id %>" />
-      <button class="btn btn-primary" type="submit">Add to cart</button>
-    </form>
+    <% if (isLoggedIn) { %>
+      <form method="POST" action="/add-to-cart">
+        <input type="hidden" name="productId" value="<%= product._id %>" />
+        <button class="btn btn-primary" type="submit">Add to cart</button>
+      </form>
+    <% } %>
   </main>
 <%- include('../partials/tail') %>

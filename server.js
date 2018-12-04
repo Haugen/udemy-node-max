@@ -41,6 +41,21 @@ app.use(
   })
 );
 
+// Again, temporary fetch a mongoose user model every request for the app to work.
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(error => {
+      console.log(error);
+    });
+});
+
 // Add body-parser middleware.
 app.use(bodyParser.urlencoded({ extended: false }));
 
