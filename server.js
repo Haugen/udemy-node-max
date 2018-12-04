@@ -5,42 +5,38 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 const User = require('./models/user');
 
 // Made .env file available
 require('dotenv').config();
 
+const MONGODB_URI = `mongodb+srv://root:${
+  process.env.MONGO_DB_PASSWORD
+}@udemy-node-s3ewq.mongodb.net/shop`;
+
+console.log(MONGODB_URI);
 // Initiate the express app.
 const app = express();
-
-// Temporary get my demo user.
-app.use((req, res, next) => {
-  User.findById('5c06a9e6c60905e01a472200')
-    .then(user => {
-      req.user = user;
-      next();
-    })
-    .catch(error => {
-      console.log(error);
-      next();
-    });
-});
 
 // Setting the template engine to EJS.
 app.set('view engine', 'ejs');
 
 // Setting up session and cookie storage.
-const sessionStore = new session.MemoryStore();
+const sessionStore = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
 app.use(cookieParser('some secret'));
 app.use(
   session({
-    cookie: { maxAge: 60000 },
     store: sessionStore,
-    saveUninitialized: true,
-    resave: 'true',
+    saveUninitialized: false,
+    resave: false,
     secret: 'some secret'
   })
 );
@@ -59,24 +55,22 @@ app.use('/', (req, res, next) => {
 });
 
 // Using two separate custom Express routers.
-app.use(shopRoutes);
 app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+app.use(authRoutes);
 
 // If a URL is not caught by the routers above, use 404 response below.
 app.use('/', (req, res) => {
   res.status(404).render('404', {
     title: 'Page not found.',
-    path: ''
+    path: '',
+    isLoggedIn: req.session.isLoggedIn
   });
 });
 
 // Connect to db with Mongoose and start app on success.
 mongoose
-  .connect(
-    `mongodb+srv://root:${
-      process.env.MONGO_DB_PASSWORD
-    }@udemy-node-s3ewq.mongodb.net/shop?retryWrites=true`
-  )
+  .connect(MONGODB_URI)
   .then(() => {
     // For now, set up a demo user if it doesn't already exist.
     User.findOne().then(user => {
