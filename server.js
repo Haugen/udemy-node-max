@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -19,18 +20,24 @@ const MONGODB_URI = `mongodb+srv://root:${
   process.env.MONGO_DB_PASSWORD
 }@udemy-node-s3ewq.mongodb.net/shop`;
 
-console.log(MONGODB_URI);
 // Initiate the express app.
 const app = express();
 
 // Setting the template engine to EJS.
 app.set('view engine', 'ejs');
 
-// Setting up session and cookie storage.
+// Add body-parser middleware.
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Telling Express to serve "public" folder content publically.
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Setting up session and cookie storage, as well as csrf middleware.
 const sessionStore = new MongoDBStore({
   uri: MONGODB_URI,
   collection: 'sessions'
 });
+const csrfProtection = csrf();
 app.use(cookieParser('some secret'));
 app.use(
   session({
@@ -40,6 +47,7 @@ app.use(
     secret: 'some secret'
   })
 );
+app.use(csrfProtection);
 
 // Again, temporary fetch a mongoose user model every request for the app to work.
 app.use((req, res, next) => {
@@ -56,20 +64,16 @@ app.use((req, res, next) => {
     });
 });
 
-// Add body-parser middleware.
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// Telling Express to serve "public" folder content publically.
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Custom flash message middleware.
-app.use('/', (req, res, next) => {
+// Middleware for setting locals variables available in all views.
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
   res.locals.siteMessages = req.session.siteMessages || [];
   req.session.siteMessages = [];
   next();
 });
 
-// Using two separate custom Express routers.
+// Using separate custom Express routers.
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);

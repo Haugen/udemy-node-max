@@ -10,6 +10,7 @@
       <% if (admin) { %>
         <form method="POST" action="/admin/products/delete" class="float-right ml-2">
           <input type="hidden" name="productId" value="<%= _id %>" />
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>
         <a href="/admin/products/edit/<%= _id %>" class="btn btn-secondary float-right">Edit</a>
@@ -17,6 +18,7 @@
       <% } else if (isLoggedIn) { %>
       <form class="float-right" method="POST" action="/add-to-cart">
         <input type="hidden" name="productId" value="<%= _id %>" />
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button class="btn btn-primary" type="submit">Add to cart</button>
       </form>
       <% } %>

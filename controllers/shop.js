@@ -8,7 +8,7 @@ exports.getFront = (req, res) => {
         title: 'Welcome to my shop',
         path: '/',
         products: products,
-        isLoggedIn: req.session.isLoggedIn
+        csrfToken: req.csrfToken()
       });
     })
     .catch(error => {
@@ -22,8 +22,7 @@ exports.getProducts = (req, res) => {
       res.render('shop/product-list', {
         title: 'Product list',
         path: '/products',
-        products: products,
-        isLoggedIn: req.session.isLoggedIn
+        products: products
       });
     })
     .catch(error => {
@@ -37,8 +36,7 @@ exports.getProduct = (req, res) => {
       res.render('shop/product-detail', {
         title: product.title,
         path: '/products',
-        product: product,
-        isLoggedIn: req.session.isLoggedIn
+        product: product
       });
     })
     .catch(error => {
@@ -60,8 +58,7 @@ exports.getCart = (req, res) => {
       res.render('shop/cart', {
         title: 'Shopping Cart',
         path: '/cart',
-        products: user.cart.items,
-        isLoggedIn: req.session.isLoggedIn
+        products: user.cart.items
         //totalPrice: cart.totalPrice
       });
     });
@@ -134,8 +131,7 @@ exports.getOrders = (req, res) => {
     res.render('shop/orders', {
       title: 'Orders',
       path: '/orders',
-      orders: orders,
-      isLoggedIn: req.session.isLoggedIn
+      orders: orders
     });
   });
 };
