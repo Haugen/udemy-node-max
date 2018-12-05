@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const User = require('../models/user');
 
 exports.getLogin = (req, res) => {
@@ -47,20 +49,24 @@ exports.postSignup = (req, res) => {
         });
         return res.redirect('/signup');
       }
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        cart: { items: [] }
-      });
-      return newUser.save();
-    })
-    .then(() => {
-      req.session.siteMessages.push({
-        type: 'success',
-        message: "User successfully created. You're now free to login!"
-      });
-      res.redirect('/login');
+      return bcrypt
+        .hash(req.body.password, 12)
+        .then(hashedPassword => {
+          const newUser = new User({
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword,
+            cart: { items: [] }
+          });
+          return newUser.save();
+        })
+        .then(() => {
+          req.session.siteMessages.push({
+            type: 'success',
+            message: "User successfully created. You're now free to login!"
+          });
+          res.redirect('/login');
+        });
     })
     .catch(error => {
       console.log(error);
