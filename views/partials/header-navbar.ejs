@@ -41,6 +41,9 @@
         <li class="nav-item">
           <a class="nav-link <%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link <%= path === '/signup' ? 'active' : '' %>" href="/signup">Sign up</a>
+        </li>
       <% } else { %>
         <li class="nav-item">
           <form action="/logout" method="POST">

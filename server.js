@@ -87,19 +87,6 @@ app.use('/', (req, res) => {
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    // For now, set up a demo user if it doesn't already exist.
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Tobias Haugen',
-          email: 'tobiashaugen@gmail.com',
-          cart: {
-            items: []
-          }
-        });
-        user.save();
-      }
-    });
     app.listen(3000);
   })
   .catch(error => {
