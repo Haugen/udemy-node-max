@@ -19,14 +19,38 @@ exports.getSignup = (req, res) => {
 };
 
 exports.postLogin = (req, res) => {
-  User.findById('5c06a9e6c60905e01a472200')
+  User.findOne({ email: req.body.email })
     .then(user => {
-      console.log(user);
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      req.session.save(() => {
-        res.redirect('/');
-      });
+      if (!user) {
+        req.session.siteMessages.push({
+          type: 'warning',
+          message: 'E-mail address not found.'
+        });
+        return res.redirect('/login');
+      }
+      bcrypt
+        .compare(req.body.password, user.password)
+        .then(passwordSuccess => {
+          if (!passwordSuccess) {
+            req.session.siteMessages.push({
+              type: 'warning',
+              message: 'Incorrect password.'
+            });
+            return res.redirect('/login');
+          }
+          req.session.isLoggedIn = true;
+          req.session.user = user;
+          req.session.save(() => {
+            req.session.siteMessages.push({
+              type: 'success',
+              message: `Welcome, ${user.name}`
+            });
+            res.redirect('/');
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     })
     .catch(error => {
       console.log(error);
