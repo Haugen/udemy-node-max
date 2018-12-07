@@ -37,6 +37,71 @@ exports.getResetPassword = (req, res) => {
   });
 };
 
+exports.getNewPassword = (req, res) => {
+  const token = req.params.token;
+  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
+    .then(user => {
+      if (!user) {
+        req.session.siteMessages.push({
+          type: 'warning',
+          message: 'Could not find a user with that email.'
+        });
+        res.redirect('/');
+      } else {
+        res.render('auth/new-password', {
+          title: 'Enter new password',
+          path: '/new-password',
+          userId: user._id.toString(),
+          passwordToken: token
+        });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+exports.postNewPassword = (req, res) => {
+  const newPassword = req.body.password;
+  const userId = req.body.userId;
+  const passwordToken = req.body.passwordToken;
+  let resetUser;
+
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() },
+    _id: userId
+  })
+    .then(user => {
+      if (!user) {
+        req.session.siteMessages.push({
+          type: 'warning',
+          message: 'Could not find a user with that email.'
+        });
+        res.redirect('/');
+      } else {
+        resetUser = user;
+        return bcrypt.hash(newPassword, 12);
+      }
+    })
+    .then(hashedPassword => {
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = undefined;
+      resetUser.resetTokenExpiration = undefined;
+      return resetUser.save();
+    })
+    .then(() => {
+      req.session.siteMessages.push({
+        type: 'success',
+        message: 'Your password has been reset. You can now login.'
+      });
+      res.redirect('/login');
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 exports.postResetPassword = (req, res) => {
   crypto.randomBytes(32, (error, buffer) => {
     if (error) {
@@ -77,7 +142,7 @@ exports.postResetPassword = (req, res) => {
             <h1>Password reset</h1>
             <p>If you didn't request a password reset please ignore this email.
             Otherwise click the link below to reset your password.</p>
-            <p><a href="http://localhost:3000/reset-password/${token}">Reset password</a></p>
+            <p><a href="http://localhost:3000/new-password/${token}">Reset password</a></p>
           `
         });
       })
