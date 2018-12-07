@@ -54,15 +54,20 @@ exports.postAddProduct = (req, res) => {
 };
 
 exports.postEditProduct = (req, res) => {
-  Product.findById(req.body._id)
-    .then(product => {
-      product.title = req.body.title;
-      product.price = req.body.price;
-      product.imageUrl = req.body.imageUrl;
-      product.description = req.body.description;
-      return product.save();
-    })
-    .then(() => {
+  Product.findById(req.body._id).then(product => {
+    if (product.userId.toString() !== req.user._id.toString()) {
+      req.session.siteMessages.push({
+        type: 'danger',
+        message: 'You are not authorized to edit this product.'
+      });
+
+      return res.redirect('/');
+    }
+    product.title = req.body.title;
+    product.price = req.body.price;
+    product.imageUrl = req.body.imageUrl;
+    product.description = req.body.description;
+    product.save().then(() => {
       req.session.siteMessages.push({
         type: 'success',
         message: 'Product successfully updated.'
@@ -70,13 +75,14 @@ exports.postEditProduct = (req, res) => {
 
       res.redirect('/admin/products');
     });
+  });
 };
 
 exports.postDeleteProduct = (req, res) => {
-  Product.findByIdAndDelete(req.body.productId)
+  Product.deleteOne({ _id: req.body.productId, userId: req.user._id })
     .then(() => {
       req.session.siteMessages.push({
-        type: 'success',
+        type: 'warning',
         message: 'Product deleted.'
       });
       res.redirect('/admin/products');
@@ -91,7 +97,7 @@ exports.postDeleteProduct = (req, res) => {
 };
 
 exports.getAdminProducts = (req, res) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     .then(products => {
       res.render('admin/admin-product-list', {
         title: 'Product list',
