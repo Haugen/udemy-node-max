@@ -200,6 +200,7 @@ exports.postLogout = (req, res) => {
 
 exports.postSignup = (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(422).render('auth/signup', {
       title: 'Sign up',
@@ -208,45 +209,34 @@ exports.postSignup = (req, res) => {
     });
   }
 
-  User.findOne({ email: req.body.email })
-    .then(user => {
-      if (user) {
-        req.session.siteMessages.push({
-          type: 'warning',
-          message: 'That e-mail address is already registered.'
-        });
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(req.body.password, 12)
-        .then(hashedPassword => {
-          const newUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword,
-            cart: { items: [] }
-          });
-          return newUser.save();
-        })
-        .then(() => {
-          req.session.siteMessages.push({
-            type: 'success',
-            message: "User successfully created. You're now free to login!"
-          });
+  bcrypt
+    .hash(req.body.password, 12)
+    .then(hashedPassword => {
+      const newUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword,
+        cart: { items: [] }
+      });
+      return newUser.save();
+    })
+    .then(() => {
+      req.session.siteMessages.push({
+        type: 'success',
+        message: "User successfully created. You're now free to login!"
+      });
 
-          res.redirect('/login');
+      res.redirect('/login');
 
-          return transporter.sendMail({
-            to: req.body.email,
-            from: 'shop@nodecourse.com',
-            subject: 'Welcome!',
-            html: `
+      return transporter.sendMail({
+        to: req.body.email,
+        from: 'shop@nodecourse.com',
+        subject: 'Welcome!',
+        html: `
               <h1>Welcome, ${req.body.name}!</h1>
               <p>I'm so happy to see you want to use my shop, but don't shop too much dumb stuff!</p>
             `
-          });
-        })
-        .then(message => {});
+      });
     })
     .catch(error => {
       console.log(error);
