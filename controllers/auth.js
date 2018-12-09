@@ -154,6 +154,16 @@ exports.postResetPassword = (req, res) => {
 };
 
 exports.postLogin = (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      title: 'Login',
+      path: '/login',
+      siteMessages: errors.array()
+    });
+  }
+
   User.findOne({ email: req.body.email })
     .then(user => {
       if (!user) {

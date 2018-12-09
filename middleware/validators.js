@@ -24,4 +24,8 @@ validators.signUp = [
     .withMessage('Your password do not match.')
 ];
 
+validators.login = [
+  check('email', 'Please enter a valid e-mail address.').isEmail()
+];
+
 module.exports = validators;
