@@ -27,7 +27,10 @@ exports.getLogin = (req, res) => {
 exports.getSignup = (req, res) => {
   res.render('auth/signup', {
     title: 'Sign up',
-    path: '/signup'
+    path: '/signup',
+    oldInput: {
+      email: ''
+    }
   });
 };
 
@@ -215,7 +218,10 @@ exports.postSignup = (req, res) => {
     return res.status(422).render('auth/signup', {
       title: 'Sign up',
       path: '/signup',
-      siteMessages: errors.array()
+      siteMessages: errors.array(),
+      oldInput: {
+        email: req.body.email
+      }
     });
   }
 

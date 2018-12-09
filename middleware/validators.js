@@ -19,9 +19,12 @@ validators.signUp = [
     'password',
     'Please choose a password that is at least five characters long.'
   ).isLength({ min: 5 }),
-  body('confirmPassword')
-    .equals('password')
-    .withMessage('Your password do not match.')
+  body('confirmPassword').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Your password do not match.');
+    }
+    return true;
+  })
 ];
 
 validators.login = [
