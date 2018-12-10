@@ -23,19 +23,39 @@
     <form method="POST" action="<%= action %>">
       <div class="form-group">
         <label for="title">Product title</label>
-        <input type="text" class="form-control" id="title" name="title" value="<%= prodTitle %>">
+        <input
+          type="text"
+          class="<%= siteMessages.find(e => e.param === 'title') ? 'is-invalid' : '' %> form-control"
+          id="title"
+          name="title"
+          value="<%= prodTitle %>">
       </div>
       <div class="form-group">
         <label for="image-url">Image URL</label>
-        <input type="text" class="form-control" id="image-url" name="imageUrl" value="<%- imageUrl %>">
+        <input
+          type="text"
+          class="<%= siteMessages.find(e => e.param === 'imageUrl') ? 'is-invalid' : '' %> form-control"
+          id="image-url"
+          name="imageUrl"
+          value="<%- imageUrl %>">
       </div>
       <div class="form-group">
         <label for="description">Product description</label>
-        <textarea class="form-control" id="description" name="description" rows="3"><%= description %></textarea>
+        <textarea
+          class="<%= siteMessages.find(e => e.param === 'description') ? 'is-invalid' : '' %> form-control"
+          id="description"
+          name="description"
+          rows="3"><%= description %></textarea>
       </div>
       <div class="form-group">
         <label for="price">Price</label>
-        <input type="number" step="0.01" class="form-control" id="price" name="price" value="<%= price %>">
+        <input
+          type="number"
+          step="0.01"
+          class="<%= siteMessages.find(e => e.param === 'price') ? 'is-invalid' : '' %> form-control"
+          id="price"
+          name="price"
+          value="<%= price %>">
       </div>
       <% if (editMode) { %>
         <input type="hidden" name="_id" value="<%= product._id %>" />
