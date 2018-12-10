@@ -14,21 +14,28 @@ validators.signUp = [
           return Promise.reject('That e-mail address is already registered.');
         }
       });
-    }),
+    })
+    .normalizeEmail(),
   body(
     'password',
     'Please choose a password that is at least five characters long.'
-  ).isLength({ min: 5 }),
-  body('confirmPassword').custom((value, { req }) => {
-    if (value !== req.body.password) {
-      throw new Error('Your password do not match.');
-    }
-    return true;
-  })
+  )
+    .isLength({ min: 5 })
+    .trim(),
+  body('confirmPassword')
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('Your password do not match.');
+      }
+      return true;
+    })
+    .trim()
 ];
 
 validators.login = [
-  check('email', 'Please enter a valid e-mail address.').isEmail()
+  body('email', 'Please enter a valid e-mail address.')
+    .isEmail()
+    .normalizeEmail()
 ];
 
 module.exports = validators;

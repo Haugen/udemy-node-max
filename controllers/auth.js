@@ -20,7 +20,10 @@ const transporter = nodemailer.createTransport(
 exports.getLogin = (req, res) => {
   res.render('auth/login', {
     title: 'Login',
-    path: '/login'
+    path: '/login',
+    oldInput: {
+      email: ''
+    }
   });
 };
 
@@ -163,7 +166,10 @@ exports.postLogin = (req, res) => {
     return res.status(422).render('auth/login', {
       title: 'Login',
       path: '/login',
-      siteMessages: errors.array()
+      siteMessages: errors.array(),
+      oldInput: {
+        email: email
+      }
     });
   }
 
