@@ -9,12 +9,16 @@
     <h1><%= title %></h1>
 
     <% 
-      const action = editMode ? '/admin/products/edit' : '/admin/add-product';
-      const prodTitle = editMode ? product.title : '';
-      const imageUrl = editMode ? product.imageUrl : '';
-      const description = editMode ? product.description : '';
-      const price = editMode ? product.price : '';
+      var action = editMode ? '/admin/products/edit' : '/admin/add-product';
+      var prodTitle = editMode ? product.title : '';
+      var imageUrl = editMode ? product.imageUrl : '';
+      var description = editMode ? product.description : '';
+      var price = editMode ? product.price : '';
     %>
+
+    <% if (oldInput) {
+      var { title: prodTitle, imageUrl, description, price } = oldInput;
+    } %>
 
     <form method="POST" action="<%= action %>">
       <div class="form-group">

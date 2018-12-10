@@ -38,4 +38,19 @@ validators.login = [
     .normalizeEmail()
 ];
 
+validators.editProduct = [
+  body('title')
+    .isLength({ min: 5, max: 30 })
+    .withMessage('The title needs to be between 5 and 30 characters.'),
+  body('imageUrl')
+    .isURL()
+    .withMessage('Please enter a valid url.'),
+  body('description')
+    .isLength({ min: 10 })
+    .withMessage('The description needs to be at least 10 characters long.'),
+  body('price', 'Please enter a price in numbers')
+    .isNumeric()
+    .isLength({ min: 1 })
+];
+
 module.exports = validators;

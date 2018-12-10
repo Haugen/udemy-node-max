@@ -168,7 +168,7 @@ exports.postLogin = (req, res) => {
       path: '/login',
       siteMessages: errors.array(),
       oldInput: {
-        email: email
+        email: req.body.email
       }
     });
   }
