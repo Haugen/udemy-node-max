@@ -13,6 +13,7 @@ exports.getFront = (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      res.redirect('/500');
     });
 };
 
@@ -27,6 +28,7 @@ exports.getProducts = (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      res.redirect('/500');
     });
 };
 
@@ -121,6 +123,7 @@ exports.postOrder = (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      res.redirect('/500');
     });
 };
 

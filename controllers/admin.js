@@ -71,6 +71,7 @@ exports.postAddProduct = (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      res.redirect('/500');
     });
 };
 
@@ -145,5 +146,6 @@ exports.getAdminProducts = (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      res.redirect('/500');
     });
 };

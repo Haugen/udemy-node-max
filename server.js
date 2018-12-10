@@ -56,11 +56,12 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then(user => {
+      if (!user) return next();
       req.user = user;
       next();
     })
     .catch(error => {
-      console.log(error);
+      throw new Error(error);
     });
 });
 
@@ -78,10 +79,19 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+// Error page for 500 responses.
+app.use('/500', (req, res) => {
+  res.status(500).render('500', {
+    title: 'An error occured',
+    path: '',
+    isLoggedIn: req.session.isLoggedIn
+  });
+});
+
 // If a URL is not caught by the routers above, use 404 response below.
 app.use('/', (req, res) => {
   res.status(404).render('404', {
-    title: 'Page not found.',
+    title: 'Page not found',
     path: '',
     isLoggedIn: req.session.isLoggedIn
   });

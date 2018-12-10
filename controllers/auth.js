@@ -204,10 +204,12 @@ exports.postLogin = (req, res) => {
         })
         .catch(error => {
           console.log(error);
+          res.redirect('/500');
         });
     })
     .catch(error => {
       console.log(error);
+      res.redirect('/500');
     });
 };
 
@@ -262,5 +264,6 @@ exports.postSignup = (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      res.redirect('/500');
     });
 };
