@@ -6,6 +6,7 @@ const sendgrid = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator/check');
 
 const User = require('../models/user');
+const errorHandling = require('../util/errorHandling');
 
 require('dotenv').config();
 
@@ -44,7 +45,7 @@ exports.getResetPassword = (req, res) => {
   });
 };
 
-exports.getNewPassword = (req, res) => {
+exports.getNewPassword = (req, res, next) => {
   const token = req.params.token;
   User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
     .then(user => {
@@ -64,11 +65,11 @@ exports.getNewPassword = (req, res) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      next(errorHandling(error));
     });
 };
 
-exports.postNewPassword = (req, res) => {
+exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
@@ -105,15 +106,14 @@ exports.postNewPassword = (req, res) => {
       res.redirect('/login');
     })
     .catch(error => {
-      console.log(error);
+      next(errorHandling(error));
     });
 };
 
-exports.postResetPassword = (req, res) => {
+exports.postResetPassword = (req, res, next) => {
   crypto.randomBytes(32, (error, buffer) => {
     if (error) {
-      console.log(error);
-      res.redirect('/');
+      next(errorHandling(error));
     }
 
     const token = buffer.toString('hex');
@@ -154,12 +154,12 @@ exports.postResetPassword = (req, res) => {
         });
       })
       .catch(error => {
-        console.log(error);
+        next(errorHandling(error));
       });
   });
 };
 
-exports.postLogin = (req, res) => {
+exports.postLogin = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -203,13 +203,11 @@ exports.postLogin = (req, res) => {
           });
         })
         .catch(error => {
-          console.log(error);
-          res.redirect('/500');
+          next(errorHandling(error));
         });
     })
     .catch(error => {
-      console.log(error);
-      res.redirect('/500');
+      next(errorHandling(error));
     });
 };
 
@@ -219,7 +217,7 @@ exports.postLogout = (req, res) => {
   });
 };
 
-exports.postSignup = (req, res) => {
+exports.postSignup = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -263,7 +261,6 @@ exports.postSignup = (req, res) => {
       });
     })
     .catch(error => {
-      console.log(error);
-      res.redirect('/500');
+      next(errorHandling(error));
     });
 };

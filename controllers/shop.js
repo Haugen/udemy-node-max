@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
+const errorHandling = require('../util/errorHandling');
 
 exports.getFront = (req, res, next) => {
   Product.find()
@@ -12,14 +13,11 @@ exports.getFront = (req, res, next) => {
       });
     })
     .catch(error => {
-      const err = new Error(error);
-      err.httpStatusCode = 500;
-      console.log(error);
-      return next(err);
+      next(errorHandling(error));
     });
 };
 
-exports.getProducts = (req, res) => {
+exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
       res.render('shop/product-list', {
@@ -29,8 +27,7 @@ exports.getProducts = (req, res) => {
       });
     })
     .catch(error => {
-      console.log(error);
-      res.redirect('/500');
+      next(errorHandling(error));
     });
 };
 
@@ -100,7 +97,7 @@ exports.postCart = (req, res) => {
     });
 };
 
-exports.postOrder = (req, res) => {
+exports.postOrder = (req, res, next) => {
   req.user
     .populate('cart.items.product')
     .execPopulate()
@@ -124,8 +121,7 @@ exports.postOrder = (req, res) => {
       res.redirect('/orders');
     })
     .catch(error => {
-      console.log(error);
-      res.redirect('/500');
+      next(errorHandling(error));
     });
 };
 

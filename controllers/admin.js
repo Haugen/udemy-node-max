@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator/check');
 
 const Product = require('../models/product');
-const User = require('../models/user');
+const errorHandling = require('../util/errorHandling');
 
 exports.getAddProduct = (req, res) => {
   res.render('admin/edit-product', {
@@ -34,7 +34,7 @@ exports.getEditProduct = (req, res) => {
     });
 };
 
-exports.postAddProduct = (req, res) => {
+exports.postAddProduct = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -70,8 +70,7 @@ exports.postAddProduct = (req, res) => {
       res.redirect('/admin/products');
     })
     .catch(error => {
-      console.log(error);
-      res.redirect('/500');
+      next(errorHandling(error));
     });
 };
 
@@ -135,7 +134,7 @@ exports.postDeleteProduct = (req, res) => {
     });
 };
 
-exports.getAdminProducts = (req, res) => {
+exports.getAdminProducts = (req, res, next) => {
   Product.find({ userId: req.user._id })
     .then(products => {
       res.render('admin/admin-product-list', {
@@ -145,7 +144,6 @@ exports.getAdminProducts = (req, res) => {
       });
     })
     .catch(error => {
-      console.log(error);
-      res.redirect('/500');
+      next(errorHandling(error));
     });
 };
