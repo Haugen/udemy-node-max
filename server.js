@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const User = require('./models/user');
+const errorHandling = require('./util/errorHandling');
 
 // Made .env file available
 require('dotenv').config();
@@ -61,7 +62,7 @@ app.use((req, res, next) => {
       next();
     })
     .catch(error => {
-      throw new Error(error);
+      next(errorHandling(error));
     });
 });
 
