@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
 
-exports.getFront = (req, res) => {
+exports.getFront = (req, res, next) => {
   Product.find()
     .then(products => {
       res.render('shop/index', {
@@ -12,8 +12,10 @@ exports.getFront = (req, res) => {
       });
     })
     .catch(error => {
+      const err = new Error(error);
+      err.httpStatusCode = 500;
       console.log(error);
-      res.redirect('/500');
+      return next(err);
     });
 };
 

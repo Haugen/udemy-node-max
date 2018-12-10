@@ -97,6 +97,11 @@ app.use('/', (req, res) => {
   });
 });
 
+// Error handling middleware.
+app.use((error, req, res, next) => {
+  res.redirect('500');
+});
+
 // Connect to db with Mongoose and start app on success.
 mongoose
   .connect(MONGODB_URI)
