@@ -116,21 +116,23 @@ exports.postEditProduct = (req, res) => {
   });
 };
 
-exports.postDeleteProduct = (req, res) => {
-  Product.deleteOne({ _id: req.body.productId, userId: req.user._id })
+exports.deleteProduct = (req, res) => {
+  Product.deleteOne({ _id: req.params.productId, userId: req.user._id })
     .then(() => {
-      req.session.siteMessages.push({
-        type: 'warning',
-        message: 'Product deleted.'
-      });
-      res.redirect('/admin/products');
+      // req.session.siteMessages.push({
+      //   type: 'warning',
+      //   message: 'Product deleted.'
+      // });
+      // res.redirect('/admin/products');
+      res.status(200).json({ message: 'Product deleted!' });
     })
     .catch(error => {
       console.log(error);
-      req.session.siteMessages.push({
-        type: 'warning',
-        message: error.message
-      });
+      // req.session.siteMessages.push({
+      //   type: 'warning',
+      //   message: error.message
+      // });
+      res.status(500).json({ message: 'Failed to delete product.' });
     });
 };
 
