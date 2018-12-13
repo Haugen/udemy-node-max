@@ -13,8 +13,8 @@ router.get('/cart/remove/:id', isAuth, shopController.getCartRemove);
 // router.get('/cart/increase-quantity/:id', shopController.getIncreaseQuantity);
 // router.get('/cart/decrease-quantity/:id', shopController.getDecreaseQuantity);
 router.get('/orders', isAuth, shopController.getOrders);
+router.get('/checkout', isAuth, shopController.getCheckout);
 
 router.post('/add-to-cart', isAuth, shopController.postCart);
-router.post('/create-order', isAuth, shopController.postOrder);
 
 module.exports = router;

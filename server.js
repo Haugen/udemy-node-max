@@ -13,6 +13,8 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const User = require('./models/user');
 const errorHandling = require('./util/errorHandling');
+const shopController = require('./controllers/shop');
+const isAuth = require('./middleware/is-auth');
 
 // Made .env file available
 require('dotenv').config();
@@ -48,7 +50,6 @@ app.use(
     secret: 'some secret'
   })
 );
-app.use(csrfProtection);
 
 // Again, temporary fetch a mongoose user model every request for the app to work.
 app.use((req, res, next) => {
@@ -66,7 +67,12 @@ app.use((req, res, next) => {
     });
 });
 
+// Create order route here so it wont use csrf protection.
+app.post('/create-order', isAuth, shopController.postCreateOrder);
+
 // Middleware for setting locals variables available in all views.
+// Initiate csrf here as well.
+app.use(csrfProtection);
 app.use((req, res, next) => {
   res.locals.isLoggedIn = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();

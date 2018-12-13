@@ -1,3 +1,7 @@
+require('dotenv').config();
+
+const stripe = require('stripe')('sk_test_OBsj2xJ039KHTOJ2zaK02D90');
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 const errorHandling = require('../util/errorHandling');
@@ -97,11 +101,18 @@ exports.postCart = (req, res) => {
     });
 };
 
-exports.postOrder = (req, res, next) => {
+exports.postCreateOrder = (req, res, next) => {
+  const token = req.body.stripeToken;
+  let totalPrice = 0;
+
   req.user
     .populate('cart.items.product')
     .execPopulate()
     .then(user => {
+      user.cart.items.forEach(p => {
+        totalPrice += p.quantity * p.product.price;
+      });
+
       const products = user.cart.items.map(item => {
         return {
           product: { ...item.product._doc },
@@ -116,11 +127,29 @@ exports.postOrder = (req, res, next) => {
 
       return order.save();
     })
+    .then(result => {
+      const charge = stripe.charges.create({
+        amount: totalPrice * 100,
+        currency: 'usd',
+        description: 'Example charge',
+        source: token,
+        metadata: {
+          order_id: result._id.toString()
+        }
+      });
+      return charge;
+    })
     .then(() => {
+      req.session.siteMessages.push({
+        type: 'success',
+        message: 'Your order has been placed. Time to celebrate!'
+      });
+
       req.user.clearCart();
       res.redirect('/orders');
     })
     .catch(error => {
+      console.log(error);
       next(errorHandling(error));
     });
 };
@@ -135,4 +164,28 @@ exports.getOrders = (req, res) => {
       orders: orders
     });
   });
+};
+
+exports.getCheckout = (req, res, next) => {
+  req.user
+    .populate('cart.items.product')
+    .execPopulate()
+    .then(user => {
+      const products = user.cart.items;
+      let total = 0;
+
+      products.forEach(p => {
+        total += p.quantity * p.product.price;
+      });
+
+      res.render('shop/checkout', {
+        title: 'Checkout',
+        path: '/checkout',
+        products: user.cart.items,
+        totalPrice: total
+      });
+    })
+    .catch(err => {
+      next(errorHandling(err));
+    });
 };
