@@ -1,34 +1,26 @@
 {
-  "name": "node",
-  "version": "1.0.0",
-  "description": "Node course practice ground.",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Haugen/udemy-node-max.git"
-  },
-  "author": "Tobias Haugen",
-  "license": "ISC",
+  "name": "node-complete-social-network-prep",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.18.3",
-    "connect-mongodb-session": "^2.0.5",
-    "cookie-parser": "^1.4.3",
-    "csurf": "^1.9.0",
-    "dotenv": "^6.1.0",
-    "ejs": "^2.6.1",
-    "express": "^4.16.4",
-    "express-session": "^1.15.6",
-    "express-validator": "^5.3.0",
-    "mongodb": "^3.1.10",
-    "mongoose": "^5.3.14",
-    "nodemailer": "^4.7.0",
-    "nodemailer-sendgrid-transport": "^0.2.0",
-    "stripe": "^6.19.0",
-    "uniqid": "^5.0.3"
-  }
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.0.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
