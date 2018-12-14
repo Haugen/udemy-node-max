@@ -4,12 +4,16 @@ exports.getPosts = (req, res, next) => {
   res.status(200).json({
     posts: [
       {
+        _id: '1',
         title: 'A samle post',
         content: 'The content of the sample post.',
-        imageUrl: 'images/bird.jpeg'
+        imageUrl: 'images/bird.jpeg',
+        creator: {
+          name: 'Tobias Haugen'
+        },
+        createdAt: new Date()
       }
-    ],
-    totalItems: this.posts.length
+    ]
   });
 };
 
