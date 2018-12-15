@@ -26,7 +26,11 @@ exports.postPost = (req, res, next) => {
     post: {
       id: uniqid(),
       title: title,
-      content: content
+      content: content,
+      creator: {
+        name: 'Tobias'
+      },
+      createdAt: new Date()
     }
   });
 };
