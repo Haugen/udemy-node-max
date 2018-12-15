@@ -1,9 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 const feedRoutes = require('./routes/feed');
 
 const app = express();
+
+const MONGODB_URI = `mongodb+srv://root:${
+  process.env.MONGO_DB_PASSWORD
+}@udemy-node-s3ewq.mongodb.net/messages`;
 
 app.use(bodyParser.json());
 
@@ -20,4 +26,11 @@ app.use((req, res, next) => {
 
 app.use('/feed', feedRoutes);
 
-app.listen(3001);
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    app.listen(3001);
+  })
+  .catch(error => {
+    console.log(error);
+  });

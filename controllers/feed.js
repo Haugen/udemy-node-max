@@ -1,6 +1,8 @@
 const uniqid = require('uniqid');
 const { validationResult } = require('express-validator/check');
 
+const Post = require('../models/post');
+
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
     posts: [
@@ -30,16 +32,24 @@ exports.postPost = (req, res, next) => {
   const title = req.body.title;
   const content = req.body.content;
 
-  res.status(201).json({
-    message: 'Post successfully created.',
-    post: {
-      id: uniqid(),
-      title: title,
-      content: content,
-      creator: {
-        name: 'Tobias'
-      },
-      createdAt: new Date()
+  const post = new Post({
+    title: title,
+    content: content,
+    creator: {
+      name: 'Tobias'
     }
   });
+
+  post
+    .save()
+    .then(result => {
+      console.log(result);
+      res.status(201).json({
+        message: 'Post successfully created.',
+        post: post
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
 };
