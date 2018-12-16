@@ -15,6 +15,24 @@ exports.getPosts = (req, res, next) => {
     });
 };
 
+exports.getPost = (req, res, next) => {
+  const postId = req.params.postId;
+  console.log(postId);
+  Post.findById(postId)
+    .then(post => {
+      if (!post) {
+        throw Error('No post found!');
+      }
+      res.status(200).json({
+        message: 'Post fetched.',
+        post: post
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 exports.postPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
