@@ -42,12 +42,18 @@ exports.postPost = (req, res, next) => {
     });
   }
 
+  if (!req.file) {
+    throw new Error('An image is required.');
+  }
+
   const title = req.body.title;
   const content = req.body.content;
+  const imageUrl = req.file.path;
 
   const post = new Post({
     title: title,
     content: content,
+    imageUrl: imageUrl,
     creator: {
       name: 'Tobias'
     }
