@@ -1,23 +1,18 @@
-const uniqid = require('uniqid');
 const { validationResult } = require('express-validator/check');
 
 const Post = require('../models/post');
 
 exports.getPosts = (req, res, next) => {
-  res.status(200).json({
-    posts: [
-      {
-        _id: '1',
-        title: 'A samle post',
-        content: 'The content of the sample post.',
-        imageUrl: 'images/bird.jpeg',
-        creator: {
-          name: 'Tobias Haugen'
-        },
-        createdAt: new Date()
-      }
-    ]
-  });
+  Post.find()
+    .then(result => {
+      res.status(200).json({
+        message: 'Successfully fetched posts.',
+        posts: result
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
 };
 
 exports.postPost = (req, res, next) => {
