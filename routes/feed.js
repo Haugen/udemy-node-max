@@ -12,4 +12,6 @@ router.post('/post', validators.postPost, feedController.postPost);
 
 router.put('/post/:postId', validators.postPost, feedController.updatePost);
 
+router.delete('/post/:postId', feedController.deletePost);
+
 module.exports = router;

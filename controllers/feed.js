@@ -72,7 +72,6 @@ exports.postPost = (req, res, next) => {
   post
     .save()
     .then(result => {
-      console.log(result);
       res.status(201).json({
         message: 'Post successfully created.',
         post: post
@@ -123,4 +122,27 @@ exports.updatePost = (req, res, next) => {
       });
     })
     .catch(error => console.log(error));
+};
+
+exports.deletePost = (req, res, next) => {
+  const postId = req.params.postId;
+  Post.findById(postId)
+    .then(post => {
+      if (!post) {
+        throw new Error('No post found.');
+      }
+      if (post.imageUrl) {
+        clearImage(post.imageUrl);
+      }
+      return Post.findByIdAndRemove(postId);
+    })
+    .then(result => {
+      res.status(200).json({
+        message: 'Post successfully deleted.',
+        post: result
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
 };
