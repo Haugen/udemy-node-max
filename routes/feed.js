@@ -10,4 +10,6 @@ router.get('/post/:postId', feedController.getPost);
 
 router.post('/post', validators.postPost, feedController.postPost);
 
+router.put('/post/:postId', validators.postPost, feedController.updatePost);
+
 module.exports = router;

@@ -1,6 +1,16 @@
+const fs = require('fs');
+const path = require('path');
+
 const { validationResult } = require('express-validator/check');
 
 const Post = require('../models/post');
+
+const clearImage = filePath => {
+  filePath = path.join(__dirname, '..', filePath);
+  fs.unlink(filePath, error => {
+    console.log(error);
+  });
+};
 
 exports.getPosts = (req, res, next) => {
   Post.find()
@@ -71,4 +81,46 @@ exports.postPost = (req, res, next) => {
     .catch(error => {
       console.log(error);
     });
+};
+
+exports.updatePost = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      message: 'Validation failed.',
+      errors: errors.array()
+    });
+  }
+
+  const postId = req.params.postId;
+  const title = req.body.title;
+  const content = req.body.content;
+  let imageUrl = req.body.imageUrl;
+  if (req.file) {
+    imageUrl = req.file.path;
+  }
+  if (!imageUrl) {
+    throw new Error('No image picked.');
+  }
+
+  Post.findById(postId)
+    .then(post => {
+      if (!post) {
+        throw new Error('No post found!');
+      }
+      if (imageUrl !== post.imageUrl) {
+        clearImage(post.imageUrl);
+      }
+      post.title = title;
+      post.imageUrl = imageUrl;
+      post.content = content;
+      return post.save();
+    })
+    .then(result => {
+      res.status(200).json({
+        message: 'Post updated.',
+        post: result
+      });
+    })
+    .catch(error => console.log(error));
 };
