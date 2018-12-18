@@ -5,6 +5,8 @@ const validators = require('../middleware/validation');
 
 const router = express.Router();
 
+router.post('/login', authController.login);
+
 router.put('/signup', validators.signup, authController.signup);
 
 module.exports = router;
