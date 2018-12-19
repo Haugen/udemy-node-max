@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/posts', isAuth, feedController.getPosts);
 router.get('/post/:postId', isAuth, feedController.getPost);
+router.get('/status', isAuth, feedController.getStatus);
 
 router.post('/post', isAuth, validators.postPost, feedController.postPost);
 
@@ -17,6 +18,7 @@ router.put(
   validators.postPost,
   feedController.updatePost
 );
+router.put('/status', isAuth, feedController.updateStatus);
 
 router.delete('/post/:postId', isAuth, feedController.deletePost);
 

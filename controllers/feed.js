@@ -171,3 +171,43 @@ exports.deletePost = (req, res, next) => {
       console.log(error);
     });
 };
+
+exports.getStatus = (req, res, next) => {
+  User.findById(req.userId)
+    .then(user => {
+      if (!user) {
+        throw new Error('No user found.');
+      }
+
+      res.status(200).json({
+        message: 'Status fetched.',
+        status: user.status
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+exports.updateStatus = (req, res, next) => {
+  const status = req.body.status;
+
+  User.findById(req.userId)
+    .then(user => {
+      if (!user) {
+        throw new Error('No user found.');
+      }
+
+      user.status = status;
+      return user.save();
+    })
+    .then(user => {
+      res.status(200).json({
+        message: 'Status updated.',
+        user: user
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
