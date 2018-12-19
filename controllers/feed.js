@@ -15,7 +15,7 @@ const clearImage = filePath => {
 
 exports.getPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate('creator');
 
     res.status(200).json({
       message: 'Successfully fetched posts.',
@@ -30,7 +30,7 @@ exports.getPost = async (req, res, next) => {
   const postId = req.params.postId;
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate('creator');
     if (!post) {
       throw Error('No post found!');
     }
