@@ -13,17 +13,17 @@ const clearImage = filePath => {
   });
 };
 
-exports.getPosts = (req, res, next) => {
-  Post.find()
-    .then(result => {
-      res.status(200).json({
-        message: 'Successfully fetched posts.',
-        posts: result
-      });
-    })
-    .catch(error => {
-      console.log(error);
+exports.getPosts = async (req, res, next) => {
+  try {
+    const posts = await Post.find();
+
+    res.status(200).json({
+      message: 'Successfully fetched posts.',
+      posts: posts
     });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getPost = async (req, res, next) => {
@@ -43,7 +43,7 @@ exports.getPost = async (req, res, next) => {
   }
 };
 
-exports.postPost = (req, res, next) => {
+exports.postPost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -59,7 +59,6 @@ exports.postPost = (req, res, next) => {
   const title = req.body.title;
   const content = req.body.content;
   const imageUrl = req.file.path;
-  let creator;
 
   const post = new Post({
     title: title,
@@ -68,32 +67,23 @@ exports.postPost = (req, res, next) => {
     creator: req.userId
   });
 
-  post
-    .save()
-    .then(() => {
-      return User.findById(req.userId);
-    })
-    .then(user => {
-      creator = user;
-      user.posts.push(post);
-      return user.save();
-    })
-    .then(() => {
-      res.status(201).json({
-        message: 'Post successfully created.',
-        post: post,
-        creator: {
-          _id: creator._id,
-          name: creator.name
-        }
-      });
-    })
-    .catch(error => {
-      console.log(error);
+  try {
+    await post.save();
+
+    const user = await User.findById(req.userId);
+    user.posts.push(post);
+    await user.save();
+
+    res.status(201).json({
+      message: 'Post successfully created.',
+      post: post
     });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-exports.updatePost = (req, res, next) => {
+exports.updatePost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -113,100 +103,98 @@ exports.updatePost = (req, res, next) => {
     throw new Error('No image picked.');
   }
 
-  Post.findById(postId)
-    .then(post => {
-      if (!post) {
-        throw new Error('No post found!');
-      }
-      if (post.creator.toString() !== req.userId.toString()) {
-        throw new Error('You are not authorized to edit this post.');
-      }
-      if (imageUrl !== post.imageUrl) {
-        clearImage(post.imageUrl);
-      }
-      post.title = title;
-      post.imageUrl = imageUrl;
-      post.content = content;
-      return post.save();
-    })
-    .then(result => {
-      res.status(200).json({
-        message: 'Post updated.',
-        post: result
-      });
-    })
-    .catch(error => console.log(error));
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      throw new Error('No post found!');
+    }
+    if (post.creator.toString() !== req.userId.toString()) {
+      throw new Error('You are not authorized to edit this post.');
+    }
+
+    if (imageUrl !== post.imageUrl) {
+      clearImage(post.imageUrl);
+    }
+    post.title = title;
+    post.imageUrl = imageUrl;
+    post.content = content;
+    await post.save();
+
+    res.status(200).json({
+      message: 'Post updated.',
+      post: post
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-exports.deletePost = (req, res, next) => {
+exports.deletePost = async (req, res, next) => {
   const postId = req.params.postId;
-  Post.findById(postId)
-    .then(post => {
-      if (!post) {
-        throw new Error('No post found.');
-      }
-      if (post.creator.toString() !== req.userId.toString()) {
-        throw new Error('You are not authorized to delete this post.');
-      }
-      if (post.imageUrl) {
-        clearImage(post.imageUrl);
-      }
-      return Post.findByIdAndRemove(postId);
-    })
-    .then(() => {
-      return User.findById(req.userId);
-    })
-    .then(user => {
-      user.posts.pull(postId);
-      return user.save();
-    })
-    .then(() => {
-      res.status(200).json({
-        message: 'Post successfully deleted.',
-        post: result
-      });
-    })
-    .catch(error => {
-      console.log(error);
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      throw new Error('No post found.');
+    }
+    if (post.creator.toString() !== req.userId.toString()) {
+      throw new Error('You are not authorized to delete this post.');
+    }
+    if (post.imageUrl) {
+      clearImage(post.imageUrl);
+    }
+
+    await Post.findByIdAndRemove(postId);
+
+    const user = await User.findById(req.userId);
+    user.posts.pull(postId);
+    await user.save();
+
+    res.status(200).json({
+      message: 'Post successfully deleted.',
+      post: post
     });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-exports.getStatus = (req, res, next) => {
-  User.findById(req.userId)
-    .then(user => {
-      if (!user) {
-        throw new Error('No user found.');
-      }
+exports.getStatus = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      throw new Error('No user found.');
+    }
 
-      res.status(200).json({
-        message: 'Status fetched.',
-        status: user.status
-      });
-    })
-    .catch(error => {
-      console.log(error);
+    res.status(200).json({
+      message: 'Status fetched.',
+      status: user.status
     });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-exports.updateStatus = (req, res, next) => {
+exports.updateStatus = async (req, res, next) => {
   const status = req.body.status;
 
-  User.findById(req.userId)
-    .then(user => {
-      if (!user) {
-        throw new Error('No user found.');
-      }
+  try {
+    const user = await User.findById(req.userId);
 
-      user.status = status;
-      return user.save();
-    })
-    .then(user => {
-      res.status(200).json({
-        message: 'Status updated.',
-        user: user
-      });
-    })
-    .catch(error => {
-      console.log(error);
+    if (!user) {
+      throw new Error('No user found.');
+    }
+
+    user.status = status;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Status updated.',
+      user: user
     });
+  } catch (error) {
+    console.log(error);
+  }
 };
