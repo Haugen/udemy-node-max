@@ -47,6 +47,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader(
     'Access-Control-Allow-Methods',
     'GET, POST, PUT, PATCH, DELETE'
@@ -62,7 +63,11 @@ app.use('/auth', authRoutes);
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    app.listen(3001);
+    const server = app.listen(3001);
+    const io = require('./socket').init(server);
+    io.on('connect', socket => {
+      console.log('Client connected');
+    });
   })
   .catch(error => {
     console.log(error);

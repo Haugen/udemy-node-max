@@ -3,6 +3,7 @@ const path = require('path');
 
 const { validationResult } = require('express-validator/check');
 
+const io = require('../socket');
 const Post = require('../models/post');
 const User = require('../models/user');
 
@@ -74,6 +75,11 @@ exports.postPost = async (req, res, next) => {
     user.posts.push(post);
     await user.save();
 
+    io.getIo().emit('posts', {
+      action: 'create',
+      post: post
+    });
+
     res.status(201).json({
       message: 'Post successfully created.',
       post: post
@@ -121,6 +127,11 @@ exports.updatePost = async (req, res, next) => {
     post.content = content;
     await post.save();
 
+    io.getIo().emit('posts', {
+      action: 'update',
+      post: post
+    });
+
     res.status(200).json({
       message: 'Post updated.',
       post: post
@@ -151,6 +162,11 @@ exports.deletePost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.pull(postId);
     await user.save();
+
+    io.getIo().emit('posts', {
+      action: 'delete',
+      post: postId
+    });
 
     res.status(200).json({
       message: 'Post successfully deleted.',
