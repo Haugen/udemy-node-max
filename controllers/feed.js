@@ -119,6 +119,9 @@ exports.updatePost = (req, res, next) => {
       if (!post) {
         throw new Error('No post found!');
       }
+      if (post.creator.toString() !== req.userId.toString()) {
+        throw new Error('You are not authorized to edit this post.');
+      }
       if (imageUrl !== post.imageUrl) {
         clearImage(post.imageUrl);
       }
@@ -142,6 +145,9 @@ exports.deletePost = (req, res, next) => {
     .then(post => {
       if (!post) {
         throw new Error('No post found.');
+      }
+      if (post.creator.toString() !== req.userId.toString()) {
+        throw new Error('You are not authorized to delete this post.');
       }
       if (post.imageUrl) {
         clearImage(post.imageUrl);
