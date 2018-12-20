@@ -63,7 +63,19 @@ app.use(
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
-    graphiql: true
+    graphiql: true,
+    formatError(error) {
+      if (!error.originalError) {
+        return error;
+      }
+      const data = error.originalError.data;
+      const message = error.message || 'An error occured.';
+
+      return {
+        data,
+        message
+      };
+    }
   })
 );
 
