@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const validators = require('../middleware/validation');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const User = require('../models/user');
 
@@ -33,6 +35,34 @@ module.exports = {
     return {
       ...createdUser._doc,
       _id: createdUser._id.toString()
+    };
+  },
+
+  login: async (args, req) => {
+    const { email, password } = args;
+
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const passMatch = await bcrypt.compare(user.password, password);
+    if (!passMatch) {
+      throw new Error('Email and password do not match.');
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id.toString(),
+        email: user.email
+      },
+      process.env.JWT_TOKEN_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    return {
+      token: token,
+      userId: user._id.toString()
     };
   }
 };
