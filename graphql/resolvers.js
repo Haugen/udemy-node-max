@@ -46,7 +46,7 @@ module.exports = {
       throw new Error('User not found');
     }
 
-    const passMatch = await bcrypt.compare(user.password, password);
+    const passMatch = await bcrypt.compare(password, user.password);
     if (!passMatch) {
       throw new Error('Email and password do not match.');
     }
