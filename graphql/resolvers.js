@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const User = require('../models/user');
+const Post = require('../models/post');
 
 module.exports = {
   createUser: async (args, req) => {
@@ -63,6 +64,29 @@ module.exports = {
     return {
       token: token,
       userId: user._id.toString()
+    };
+  },
+
+  createPost: async (args, req) => {
+    const errors = validators.createPost(args.postInput);
+    if (errors.length > 0) {
+      const error = new Error('Invalid input');
+      error.data = errors;
+      throw error;
+    }
+
+    const { title, content, imageUrl } = args.postInput;
+
+    const post = new Post({
+      title: title,
+      content: content,
+      imageUrl: imageUrl
+    });
+    const createdPost = await post.save();
+
+    return {
+      ...createdPost._doc,
+      _id: createdPost._id.toString()
     };
   }
 };

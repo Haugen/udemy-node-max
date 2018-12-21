@@ -21,4 +21,18 @@ validators.signup = userInput => {
   return errors;
 };
 
+validators.createPost = postData => {
+  const errors = [];
+  const { title, content } = postData;
+
+  if (!validator.isLength(title, { min: 5 })) {
+    errors.push('Title must be at least five characters long.');
+  }
+  if (!validator.isLength(content, { min: 10 })) {
+    errors.push('Content must be at least 10 characters long.');
+  }
+
+  return errors;
+};
+
 module.exports = validators;
