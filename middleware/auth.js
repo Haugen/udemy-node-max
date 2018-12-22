@@ -2,18 +2,27 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 module.exports = (req, res, next) => {
+  const authHeader = req.get('Authorization');
+  if (!authHeader) {
+    req.isAuth = false;
+    return next();
+  }
+
   const token = req.get('Authorization').split(' ')[1];
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
   } catch (error) {
-    throw error;
+    req.isAuth = false;
+    return next();
   }
 
   if (!decodedToken) {
-    throw new Error('Not authenticated.');
+    req.isAuth = false;
+    return next();
   }
 
   req.userId = decodedToken.userId;
+  req.isAuth = true;
   next();
 };
