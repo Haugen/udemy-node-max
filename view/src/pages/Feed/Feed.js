@@ -166,7 +166,10 @@ class Feed extends Component {
       body: formData
     })
       .then(fileResData => {
-        const imageUrl = fileResData.filePath;
+        return fileResData.json();
+      })
+      .then(fileResDataJson => {
+        const imageUrl = fileResDataJson.filePath;
 
         let graphqlQuery = {
           query: `
