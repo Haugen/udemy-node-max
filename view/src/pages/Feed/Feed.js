@@ -217,12 +217,17 @@ class Feed extends Component {
           };
         } else {
           graphqlQuery = {
+            variables: {
+              title: postData.title,
+              content: postData.content,
+              imageUrl: imageUrl
+            },
             query: `
-              mutation {
+              mutation CreatePost($title: String!, $content: String!, $imageUrl: String!) {
                 createPost(postInput: {
-                  title: "${postData.title}",
-                  content: "${postData.content}",
-                  imageUrl: "${imageUrl}"
+                  title: $title,
+                  content: $content,
+                  imageUrl: $imageUrl
                 }) {
                   _id
                   title
@@ -252,6 +257,7 @@ class Feed extends Component {
       })
       .then(resData => {
         if (resData.errors) {
+          console.log(resData.errors);
           throw new Error('Creating or editing a post failed!');
         }
 
