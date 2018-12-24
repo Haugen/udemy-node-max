@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -13,6 +12,7 @@ const app = express();
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolvers = require('./graphql/resolvers');
 const auth = require('./middleware/auth');
+const clearImage = require('./util/file');
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -114,13 +114,3 @@ mongoose
   .catch(error => {
     console.log(error);
   });
-
-/**
- * Lastly, just a little local helper function.
- */
-function clearImage(filePath) {
-  filePath = path.join(__dirname, '..', filePath);
-  fs.unlink(filePath, error => {
-    console.log(error);
-  });
-}

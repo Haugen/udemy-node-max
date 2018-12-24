@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const User = require('../models/user');
 const Post = require('../models/post');
+const clearImage = require('../util/file');
 
 module.exports = {
   createUser: async (args, req) => {
@@ -139,6 +140,28 @@ module.exports = {
       createdAt: updatedPost.createdAt.toISOString(),
       updatedAt: updatedPost.updatedAt.toISOString()
     };
+  },
+
+  deletePost: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('Not authenticated.');
+    }
+
+    const postId = args.id;
+
+    const post = await Post.findById(postId);
+    if (post.creator.toString() !== req.userId) {
+      throw new Error('Not your post to delete.');
+    }
+
+    clearImage(post.imageUrl);
+    await Post.findByIdAndRemove(postId);
+
+    const user = await User.findById(post.creator);
+    user.posts.pull(postId);
+    await user.save();
+
+    return true;
   },
 
   posts: async (args, req) => {
