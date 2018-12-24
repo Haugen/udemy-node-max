@@ -102,6 +102,45 @@ module.exports = {
     };
   },
 
+  updatePost: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('Not authenticated.');
+    }
+
+    const postId = args.id;
+
+    const post = await Post.findById(postId).populate('creator');
+    if (!post) {
+      throw new Error('Post to update not found.');
+    }
+
+    if (post.creator._id.toString() !== req.userId) {
+      throw new Error('You are not authorized to edit this post.');
+    }
+
+    const errors = validators.createPost(args.postInput);
+    if (errors.length > 0) {
+      const error = new Error('Invalid input');
+      error.data = errors;
+      throw error;
+    }
+
+    const { title, content, imageUrl } = args.postInput;
+    (post.title = title), (post.content = content);
+    if (imageUrl !== 'undefined') {
+      post.imageUrl = imageUrl;
+    }
+
+    const updatedPost = await post.save();
+
+    return {
+      ...updatedPost._doc,
+      _id: updatedPost._id.toString(),
+      createdAt: updatedPost.createdAt.toISOString(),
+      updatedAt: updatedPost.updatedAt.toISOString()
+    };
+  },
+
   posts: async (args, req) => {
     if (!req.isAuth) {
       throw new Error('Not authenticated.');
