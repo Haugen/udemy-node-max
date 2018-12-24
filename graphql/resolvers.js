@@ -205,5 +205,40 @@ module.exports = {
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString()
     };
+  },
+
+  user: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('Not authenticated.');
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      throw new Error('No user found.');
+    }
+
+    return {
+      ...user._doc,
+      _id: user._id.toString()
+    };
+  },
+
+  updateStatus: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('Not authenticated.');
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      throw new Error('No user found.');
+    }
+
+    user.status = args.status;
+    await user.save();
+
+    return {
+      ...user._doc,
+      _id: user._id.toString()
+    };
   }
 };
