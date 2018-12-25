@@ -7,6 +7,7 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
+const helmet = require('helmet');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -34,6 +35,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Telling Express to serve "public" folder content publically.
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Setting secure headers with helmet.
+app.use(helmet());
 
 // Setting up session and cookie storage, as well as csrf middleware.
 const sessionStore = new MongoDBStore({
