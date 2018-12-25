@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -8,6 +9,8 @@ const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -38,6 +41,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Setting secure headers with helmet.
 app.use(helmet());
+
+// File compression.
+app.use(compression());
+
+// Morgan for loggin.
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+app.use(morgan('combined', { stream: accessLogStream }));
 
 // Setting up session and cookie storage, as well as csrf middleware.
 const sessionStore = new MongoDBStore({
